@@ -20,6 +20,8 @@
         <module>mycloud-service</module>
         <module>mycloud-service/mycloud-service-test</module>
         <module>mycloud-zuul</module>
+        <module>mycloud-admin</module>
+        <module>mycloud-common</module>
     </modules>
 
     <properties>
