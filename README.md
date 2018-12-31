@@ -1,2 +1,0 @@
-# mycloud
-spring cloud
