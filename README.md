@@ -1,6 +1,6 @@
-lanxinghua
+在master分支上，进行进一步的开发
 ---
-SpringCloud 脚手架
+SpringCloud 脚手架 + admin后台管理
 ===
 
 简易教程
