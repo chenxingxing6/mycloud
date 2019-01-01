@@ -1,4 +1,4 @@
-package com.example.configuration;
+package com.example.common.config;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,12 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 数据源
+ * 数据源配置
+ *
  * @Author: cxx
  * @Date: 2019/1/1 17:30
  */
 @Configuration
-public class DynamicDataSourceConfig {
+public class DataSourceConfig {
 
     @Bean
     @ConfigurationProperties("spring.datasource.druid.first")

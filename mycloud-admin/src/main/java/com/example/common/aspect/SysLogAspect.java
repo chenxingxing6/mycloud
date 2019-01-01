@@ -5,7 +5,7 @@ import com.example.common.utils.HttpContextUtils;
 import com.example.common.utils.IPUtils;
 import com.example.modules.sys.entity.SysLogEntity;
 import com.example.modules.sys.entity.SysUserEntity;
-import com.example.modules.sys.service.SysLogService;
+import com.example.modules.sys.service.ISysLogService;
 import com.google.gson.Gson;
 import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -28,7 +28,7 @@ import java.util.Date;
 @Component
 public class SysLogAspect {
     @Autowired
-    private SysLogService sysLogService;
+    private ISysLogService sysLogService;
 
     @Pointcut("@annotation(com.example.common.annotation.SysLog)")
     public void logPointCut() {

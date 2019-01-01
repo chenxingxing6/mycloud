@@ -15,17 +15,23 @@
 	<packaging>jar</packaging>
 	<description>Demo project for Spring Boot</description>
 
+	<properties>
+		<kaptcha.version>0.0.9</kaptcha.version>
+		<qiniu.version>[7.2.0, 7.2.99]</qiniu.version>
+		<aliyun.oss.version>2.5.0</aliyun.oss.version>
+		<qcloud.cos.version>4.4</qcloud.cos.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.example</groupId>
 			<artifactId>mycloud-common</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-
-	<!--	<dependency>
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>-->
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -39,6 +45,36 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 			<version>1.13.1.RELEASE</version>
+		</dependency>
+
+		<!--验证码-->
+		<dependency>
+			<groupId>com.github.axet</groupId>
+			<artifactId>kaptcha</artifactId>
+			<version>${kaptcha.version}</version>
+		</dependency>
+
+		<!-- oss -->
+		<dependency>
+			<groupId>com.qiniu</groupId>
+			<artifactId>qiniu-java-sdk</artifactId>
+			<version>${qiniu.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+			<version>${aliyun.oss.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.qcloud</groupId>
+			<artifactId>cos_api</artifactId>
+			<version>${qcloud.cos.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
