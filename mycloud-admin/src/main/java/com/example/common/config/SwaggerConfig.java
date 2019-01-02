@@ -38,10 +38,10 @@ public class SwaggerConfig{
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("人人开源")
-            .description("renren-admin文档")
+            .title("网盘系统")
+            .description("SpringCloud+Hadoop")
             .termsOfServiceUrl("http://www.renren.io")
-            .version("3.2.0")
+            .version("1.0.0")
             .build();
     }
 

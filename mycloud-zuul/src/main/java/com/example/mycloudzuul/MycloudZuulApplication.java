@@ -1,7 +1,7 @@
 package com.example.mycloudzuul;
 
+import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.example.mycloudzuul.service.IClientService;
-import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 @EnableDiscoveryClient
 @EnableFeignClients
 @RestController
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class, MybatisAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class, MybatisConfiguration.class})
 
 public class MycloudZuulApplication {
 

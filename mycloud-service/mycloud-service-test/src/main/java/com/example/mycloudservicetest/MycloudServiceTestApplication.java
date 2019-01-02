@@ -1,6 +1,6 @@
 package com.example.mycloudservicetest;
 
-import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import com.baomidou.mybatisplus.MybatisConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableDiscoveryClient
 @SpringBootApplication
 @RestController
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class, MybatisAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class, MybatisConfiguration.class})
 
 public class MycloudServiceTestApplication {
 
