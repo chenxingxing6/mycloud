@@ -1,4 +1,4 @@
-在master分支上，进行进一步的开发
+在master分支，项目框架已经搭建好了
 ---
 SpringCloud 脚手架 + admin后台管理
 ===
