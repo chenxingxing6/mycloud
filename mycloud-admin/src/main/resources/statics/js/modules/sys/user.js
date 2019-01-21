@@ -5,7 +5,7 @@ $(function () {
         colModel: [
 			{ label: '用户ID', name: 'userId', index: "user_id", width: 45, key: true },
 			{ label: '用户名', name: 'username', width: 75 },
-            { label: '用户类型', name: 'deptName', sortable: false, width: 75 },
+            { label: '所属部门', name: 'deptName', sortable: false, width: 75 },
 			{ label: '邮箱', name: 'email', width: 90 },
 			{ label: '手机号', name: 'mobile', width: 100 },
 			{ label: '状态', name: 'status', width: 60, formatter: function(value, options, row){

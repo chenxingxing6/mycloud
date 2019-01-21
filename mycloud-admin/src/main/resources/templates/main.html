@@ -2,36 +2,146 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>欢迎页</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="${request.contextPath}/statics/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHarts</title>
+    <link href="${request.contextPath}/statics/hplus/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="${request.contextPath}/statics/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="${request.contextPath}/statics/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="${request.contextPath}/statics/hplus/css/style.min862f.css?v=4.1.0" rel="stylesheet">
 </head>
-<body>
-<div class="panel panel-default">
-    <div class="panel-heading">基本信息</div>
-    <div style="padding: 10px 0 20px 10px;">
-        <h3>&nbsp;&nbsp;&nbsp;项目介绍</h3>
-        <ul>
-            <li>采用Spring、MyBatis、Shiro框架，开发的一套权限系统，极低门槛，拿来即用。</li>
-            <li>设计之初，就非常注重安全性，为企业系统保驾护航，让一切都变得如此简单。</li>
-            <li>提供了代码生成器，只需编写30%左右代码，其余的代码交给系统自动生成，可快速完成开发任务</li>
-            <li>推荐使用阿里云服务器部署项目，免费领取阿里云优惠券，请点击【<a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=y93lfwbg&amp;productCode=dmspre&amp;utm_source=y93lfwbg" target="_blank">免费领取</a>】</li>
-        </ul>
+<body class="gray-bg">
+<div class="row  border-bottom white-bg dashboard-header">
+    <div class="col-sm-12">
+        <h1>数据大盘</h1>
+    </div>
 
-        <h3>&nbsp;&nbsp;&nbsp;获取帮助</h3>
-        <ul>
-            <li>Git地址：<a href="https://gitee.com/renrencom.example-security" target="_blank">https://gitee.com/renrencom.example-security</a></li>
-            <li>官方社区：<a href="http://www.renren.io/?s=index/Community" target="_blank">http://www.renren.io/?s=index/Community</a></li>
-            <li>如需关注项目最新动态，请Watch、Star项目，同时也是对项目最好的支持</li>
-        </ul>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>折线图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-line-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>柱状图</h5>
+                </div>
+                <div class="ibox-content">
 
-        <h3>&nbsp;&nbsp;&nbsp;官方QQ群</h3>
-        <ul>
-            <li>高级群：324780204(大牛云集，跟大牛学习新技能)</li>
-            <li>普通群：145799952(学习交流，互相解答各种疑问)</li>
-        </ul>
+                    <div class="echarts" id="echarts-bar-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>散点图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-scatter-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>K线图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-k-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>饼状图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-pie-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>雷达图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-radar-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>和弦图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-chord-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>仪表盘</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-gauge-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>漏斗图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-funnel-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>力导向布局图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-force-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>中国地图</h5>
+                </div>
+                <div class="ibox-content">
+                    <div style="height:600px" id="echarts-map-chart"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script src="${request.contextPath}/statics/hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="${request.contextPath}/statics/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="${request.contextPath}/statics/hplus/js/echarts-all.js"></script>
+<script src="${request.contextPath}/statics/hplus/js/content.min.js?v=1.0.0"></script>
+<script src="${request.contextPath}/statics/hplus/js/echarts-demo.min.js"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
 </body>
 </html>
+
