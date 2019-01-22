@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  connection-timeout: 5000
+
+spring:
+  application:
+    name: mycloud-zuul
+  # 环境 dev|test|prod
+  profiles:
+    active: dev
+  redis:
+    open: false  # 是否开启redis缓存  true开启   false关闭
+    database: 0
+    host: localhost
+    port: 6379
+    password:      # 密码（默认为空）
+    timeout: 6000  # 连接超时时长（毫秒）
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+
+

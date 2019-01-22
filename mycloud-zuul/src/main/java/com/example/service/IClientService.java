@@ -1,4 +1,4 @@
-package com.example.mycloudzuul.service;
+package com.example.service;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,0 +1,31 @@
+#spring:
+#  zipkin:
+#    base-url: http://localhost:9411
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+zuul:
+  routes:
+    api-a:
+      path: /api-tag/**
+      serviceId: tag-client
+      sensitive-headers:
+      custom-sensitive-headers: true
+    api-b:
+      path: /api-b/**
+      serviceId: cloud-service1
+    resource-admin:
+      path: /admin/**
+      serviceId: cloud-ida-admin
+
+##Mysql数据库配置
+datasource:
+  master:
+    url: jdbc:mysql://60.205.212.196:3306/renren_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+

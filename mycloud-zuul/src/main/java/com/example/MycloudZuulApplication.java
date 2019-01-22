@@ -1,7 +1,7 @@
-package com.example.mycloudzuul;
+package com.example;
 
 import com.baomidou.mybatisplus.MybatisConfiguration;
-import com.example.mycloudzuul.service.IClientService;
+import com.example.service.IClientService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
