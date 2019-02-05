@@ -1,25 +1,30 @@
 package com.example.service;
 
-import com.baomidou.mybatisplus.service.IService;
-import com.example.entity.TokenEntity;
+import com.example.entity.SysUserEntity;
 
 /**
  * 用户Token
  */
 public interface TokenService{
 
-	TokenEntity queryByToken(String token);
-
 	/**
 	 * 生成token
 	 * @param userId  用户ID
 	 * @return        返回token信息
 	 */
-	TokenEntity createToken(long userId);
+	String createToken(long userId);
 
 	/**
-	 * 设置token过期
-	 * @param userId 用户ID
+	 * 清除token
+	 * @param token
+	 * @return
 	 */
-	void expireToken(long userId);
+	void cleanToken(String token);
+
+	/**
+	 * 查询token对应用户信息
+	 * @param token
+	 * @return
+	 */
+	SysUserEntity queryByToken(String token);
 }

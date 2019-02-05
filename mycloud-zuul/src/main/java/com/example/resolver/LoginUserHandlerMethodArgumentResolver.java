@@ -1,7 +1,7 @@
 package com.example.resolver;
 
 import com.example.annotation.LoginUser;
-import com.example.entity.UserEntity;
+import com.example.entity.SysUserEntity;
 import com.example.interceptor.AuthorizationInterceptor;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().isAssignableFrom(UserEntity.class) && parameter.hasParameterAnnotation(LoginUser.class);
+        return parameter.getParameterType().isAssignableFrom(SysUserEntity.class) && parameter.hasParameterAnnotation(LoginUser.class);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
         }
 
         //获取用户信息
-        UserEntity user = userService.selectById((Long)object);
+        SysUserEntity user = userService.selectById((Long)object);
 
         return user;
     }

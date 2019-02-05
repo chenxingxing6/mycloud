@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 异常处理器
  */
 @RestControllerAdvice
-public class RRExceptionHandler {
+public class BizExceptionHandler {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**

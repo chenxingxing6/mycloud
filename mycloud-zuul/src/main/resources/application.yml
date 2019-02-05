@@ -16,6 +16,11 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
       enabled: true
+  redis:
+    database: 0
+    host: 60.205.212.196
+    port: 6379
+
 
 #mybatis
 mybatis-plus:
@@ -42,3 +47,8 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: false
     call-setters-on-nulls: true
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false

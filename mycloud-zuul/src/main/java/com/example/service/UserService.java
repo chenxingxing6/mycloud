@@ -2,7 +2,7 @@ package com.example.service;
 
 
 import com.baomidou.mybatisplus.service.IService;
-import com.example.entity.UserEntity;
+import com.example.entity.SysUserEntity;
 import com.example.form.LoginForm;
 
 import java.util.Map;
@@ -10,9 +10,9 @@ import java.util.Map;
 /**
  * 用户
  */
-public interface UserService extends IService<UserEntity> {
+public interface UserService extends IService<SysUserEntity> {
 
-	UserEntity queryByMobile(String mobile);
+	SysUserEntity queryByMobile(String mobile);
 
 	/**
 	 * 用户登录
