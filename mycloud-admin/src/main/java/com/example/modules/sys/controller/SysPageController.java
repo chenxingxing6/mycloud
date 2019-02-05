@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class SysPageController {
-	
+
 	@RequestMapping("modules/{module}/{url}.html")
 	public String module(@PathVariable("module") String module, @PathVariable("url") String url){
 		return "modules/" + module + "/" + url;
@@ -38,6 +38,16 @@ public class SysPageController {
 	@RequestMapping("404.html")
 	public String notFound(){
 		return "404";
+	}
+
+	@RequestMapping("hadoop.html")
+	public String hadoop(){
+		return "hadoop";
+	}
+
+	@RequestMapping("hbase.html")
+	public String hbase(){
+		return "hbase";
 	}
 
 }

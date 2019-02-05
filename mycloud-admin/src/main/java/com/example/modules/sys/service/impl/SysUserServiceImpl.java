@@ -52,7 +52,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 		);
 		for(SysUserEntity sysUserEntity : page.getRecords()){
 			SysDeptEntity sysDeptEntity = sysDeptService.selectById(sysUserEntity.getDeptId());
-			sysUserEntity.setDeptName(sysDeptEntity.getName());
+			String deptName = sysDeptEntity == null ? "" : sysDeptEntity.getName();
+			sysUserEntity.setDeptName(deptName);
 		}
 		return new PageUtils(page);
 	}

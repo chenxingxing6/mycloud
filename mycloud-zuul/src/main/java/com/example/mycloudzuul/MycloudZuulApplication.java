@@ -1,49 +1,38 @@
-package com.example.mycloudservicetest;
+package com.example.mycloudzuul;
 
 import com.baomidou.mybatisplus.MybatisConfiguration;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.mycloudzuul.service.IClientService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 
-@EnableDiscoveryClient
 @SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
 @RestController
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class, MybatisConfiguration.class})
 
-public class MycloudServiceTestApplication {
+public class MycloudZuulApplication {
+
+	@Resource
+	IClientService clientService;
 
 	public static void main(String[] args) {
-		SpringApplication.run(MycloudServiceTestApplication.class, args);
+		SpringApplication.run(MycloudZuulApplication.class, args);
 	}
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-		PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
-		c.setIgnoreUnresolvablePlaceholders(true);
-		return c;
-	}
-
-	@Value("${server.port}")
-	String port;
 	@RequestMapping("/")
 	public String home() {
-		return "hello world from port " + port;
-	}
-
-	@Value("${cxx.hello}")
-	String hello;
-	@RequestMapping(value = "/hello")
-	public String hello(){
-		return hello;
+		System.out.println("*******");
+		return clientService.home();
 	}
 }
 
