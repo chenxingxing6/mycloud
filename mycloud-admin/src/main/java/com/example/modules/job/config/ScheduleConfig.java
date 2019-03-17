@@ -38,11 +38,11 @@ public class ScheduleConfig {
         //prop.put("org.quartz.jobStore.selectWithLockSQL", "SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?");
 
         factory.setQuartzProperties(prop);
-        //factory.setSchedulerName("DiskScheduler");
+        factory.setSchedulerName("DiskScheduler");
         //延时启动
-        //factory.setStartupDelay(30);
+        factory.setStartupDelay(30);
         //设置自动启动，默认为true
-        //factory.setAutoStartup(true);
+        factory.setAutoStartup(true);
         return factory;
     }
 }
