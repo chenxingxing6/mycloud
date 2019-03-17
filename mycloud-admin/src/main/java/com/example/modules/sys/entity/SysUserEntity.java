@@ -22,7 +22,7 @@ import java.util.List;
 @TableName("sys_user")
 public class SysUserEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 用户ID
 	 */
@@ -63,7 +63,12 @@ public class SysUserEntity implements Serializable {
 	 * 状态  0：禁用   1：正常
 	 */
 	private Integer status;
-	
+
+	/**
+	 * 用户类型  @see userEnum
+	 */
+	private Integer type;
+
 	/**
 	 * 角色ID列表
 	 */
@@ -89,7 +94,7 @@ public class SysUserEntity implements Serializable {
 
 	/**
 	 * 设置：
-	 * @param userId 
+	 * @param userId
 	 */
 	public void setUserId(Long userId) {
 		this.userId = userId;
@@ -102,7 +107,7 @@ public class SysUserEntity implements Serializable {
 	public Long getUserId() {
 		return userId;
 	}
-	
+
 	/**
 	 * 设置：用户名
 	 * @param username 用户名
@@ -118,7 +123,7 @@ public class SysUserEntity implements Serializable {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	/**
 	 * 设置：密码
 	 * @param password 密码
@@ -134,7 +139,7 @@ public class SysUserEntity implements Serializable {
 	public String getPassword() {
 		return password;
 	}
-	
+
 	/**
 	 * 设置：邮箱
 	 * @param email 邮箱
@@ -150,7 +155,7 @@ public class SysUserEntity implements Serializable {
 	public String getEmail() {
 		return email;
 	}
-	
+
 	/**
 	 * 设置：手机号
 	 * @param mobile 手机号
@@ -166,7 +171,7 @@ public class SysUserEntity implements Serializable {
 	public String getMobile() {
 		return mobile;
 	}
-	
+
 	/**
 	 * 设置：状态  0：禁用   1：正常
 	 * @param status 状态  0：禁用   1：正常
@@ -182,7 +187,7 @@ public class SysUserEntity implements Serializable {
 	public Integer getStatus() {
 		return status;
 	}
-	
+
 	/**
 	 * 设置：创建时间
 	 * @param createTime 创建时间
@@ -229,5 +234,13 @@ public class SysUserEntity implements Serializable {
 
 	public void setDeptName(String deptName) {
 		this.deptName = deptName;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 }

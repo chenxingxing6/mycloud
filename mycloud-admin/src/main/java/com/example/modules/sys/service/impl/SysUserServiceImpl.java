@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.example.common.annotation.DataFilter;
+import com.example.common.constants.UserEnum;
 import com.example.common.utils.Constant;
 import com.example.common.utils.PageUtils;
 import com.example.common.utils.Query;
@@ -44,10 +45,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	@DataFilter(subDept = true, user = false)
 	public PageUtils queryPage(Map<String, Object> params) {
 		String username = (String)params.get("username");
+		String userType = (String)params.get("type");
 		Page<SysUserEntity> page = this.selectPage(
 			new Query<SysUserEntity>(params).getPage(),
 			new EntityWrapper<SysUserEntity>()
 				.like(StringUtils.isNotBlank(username),"username", username)
+				.eq(StringUtils.isNotBlank(userType), "type", Integer.valueOf(userType))
 				.addFilterIfNeed(params.get(Constant.SQL_FILTER) != null, (String)params.get(Constant.SQL_FILTER))
 		);
 		for(SysUserEntity sysUserEntity : page.getRecords()){
@@ -62,13 +65,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	@Transactional(rollbackFor = Exception.class)
 	public void save(SysUserEntity user) {
 		user.setCreateTime(new Date());
-		//sha256加密
-		String salt = RandomStringUtils.randomAlphanumeric(20);
-		user.setSalt(salt);
-		user.setPassword(ShiroUtils.sha256(user.getPassword(), user.getSalt()));
+		if (UserEnum.BACK.getType().equals(user.getType().toString())) {
+			//sha256加密
+			String salt = RandomStringUtils.randomAlphanumeric(20);
+			user.setSalt(salt);
+			user.setPassword(ShiroUtils.sha256(user.getPassword(), user.getSalt()));
+			user.setType(Integer.valueOf(UserEnum.BACK.getType()));
+		}else if(UserEnum.FRONT.getType().equals(user.getType().toString())) {
+			user.setType(Integer.valueOf(UserEnum.FRONT.getType()));
+		}
 		this.insert(user);
 		//保存用户与角色关系
-		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+		if (UserEnum.BACK.getType().equals(user.getType().toString())) {
+			sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+		}
 	}
 
 	@Override
@@ -77,12 +87,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 		if(StringUtils.isBlank(user.getPassword())){
 			user.setPassword(null);
 		}else{
-			SysUserEntity userEntity = this.selectById(user.getUserId());
-			user.setPassword(ShiroUtils.sha256(user.getPassword(), userEntity.getSalt()));
+			if (UserEnum.BACK.getType().equals(user.getType().toString())) {
+				SysUserEntity userEntity = this.selectById(user.getUserId());
+				user.setPassword(ShiroUtils.sha256(user.getPassword(), userEntity.getSalt()));
+			}
 		}
 		this.updateById(user);
 		//保存用户与角色关系
-		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+		if (UserEnum.BACK.getType().equals(user.getType().toString())) {
+			sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+		}
 	}
 
 

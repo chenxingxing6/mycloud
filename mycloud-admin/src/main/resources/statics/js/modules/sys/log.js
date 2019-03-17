@@ -56,6 +56,24 @@ var vm = new Vue({
 				postData:{'key': vm.q.key},
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        clean: function () {
+            confirm('确定要清除系统日志吗？', function(){
+                $.ajax({
+                    type: "POST",
+                    url: baseURL + "sys/log/delete",
+                    contentType: "application/json",
+                    success: function(r){
+                        if(r.code == 0){
+                            alert('操作成功', function(){
+                                vm.reload();
+                            });
+                        }else{
+                            alert(r.msg);
+                        }
+                    }
+                });
+            });
+        }
 	}
 });

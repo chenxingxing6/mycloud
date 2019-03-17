@@ -14,4 +14,5 @@ public interface ISysLogService extends IService<SysLogEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
+    boolean deleteAll();
 }

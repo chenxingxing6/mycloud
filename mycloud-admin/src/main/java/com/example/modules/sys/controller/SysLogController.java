@@ -1,5 +1,6 @@
 package com.example.modules.sys.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.example.common.utils.PageUtils;
 import com.example.common.utils.R;
 import com.example.modules.sys.service.ISysLogService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.Map;
 
 
@@ -21,7 +23,7 @@ import java.util.Map;
 public class SysLogController {
 	@Autowired
 	private ISysLogService sysLogService;
-	
+
 	/**
 	 * 列表
 	 */
@@ -32,5 +34,15 @@ public class SysLogController {
 		PageUtils page = sysLogService.queryPage(params);
 		return R.ok().put("page", page);
 	}
-	
+
+	/**
+	 * 删除
+	 */
+	@ResponseBody
+	@RequestMapping("/delete")
+	@RequiresPermissions("sys:log:delete")
+	public R delete(){
+		sysLogService.deleteAll();
+		return R.ok();
+	}
 }

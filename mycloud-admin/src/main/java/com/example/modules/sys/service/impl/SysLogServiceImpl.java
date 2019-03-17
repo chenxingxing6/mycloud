@@ -1,6 +1,7 @@
 package com.example.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.example.common.utils.Query;
@@ -24,5 +25,17 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogDao, SysLogEntity> impl
             new EntityWrapper<SysLogEntity>().like(StringUtils.isNotBlank(key),"username", key)
         );
         return new PageUtils(page);
+    }
+
+
+    @Override
+    public boolean deleteAll() {
+        this.delete(new Wrapper<SysLogEntity>() {
+            @Override
+            public String getSqlSegment() {
+                return null;
+            }
+        });
+        return true;
     }
 }
