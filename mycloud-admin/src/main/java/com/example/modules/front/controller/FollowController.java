@@ -1,9 +1,12 @@
 package com.example.modules.front.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.example.common.validator.ValidatorUtils;
+import com.example.modules.front.vo.FollowUser;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +41,12 @@ public class FollowController {
     @RequestMapping("/list")
     @RequiresPermissions("front:follow:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = followService.queryPage(params);
-
-        return R.ok().put("page", page);
+        List<FollowUser> follows = followService.listFollowUser(params);
+        List<FollowUser> followeds = followService.listFollowedUser(params);
+        R result = R.ok();
+        result.put("follow", follows);
+        result.put("followeds", followeds);
+        return R.ok().put("data", result);
     }
 
 

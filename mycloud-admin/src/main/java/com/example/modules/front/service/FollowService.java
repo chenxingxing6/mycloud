@@ -3,7 +3,9 @@ package com.example.modules.front.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.example.common.utils.PageUtils;
 import com.example.modules.front.entity.FollowEntity;
+import com.example.modules.front.vo.FollowUser;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,21 @@ import java.util.Map;
 public interface FollowService extends IService<FollowEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 查询未关注的用户
+     * @param params
+     * @param userId
+     * @return
+     */
+    List<FollowUser> listFollowUser(Map<String, Object> params, Long userId);
+
+    /**
+     * 查询已关注的用户
+     * @param params
+     * @param userId
+     * @return
+     */
+    List<FollowUser> listFollowedUser(Map<String, Object> params, Long userId);
 }
 
