@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.example.common.validator.ValidatorUtils;
 import com.example.modules.front.vo.FollowUser;
+import com.example.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,7 @@ import com.example.common.utils.R;
  */
 @RestController
 @RequestMapping("front/follow")
-public class FollowController {
+public class FollowController extends AbstractController {
     @Autowired
     private FollowService followService;
 
@@ -41,8 +42,9 @@ public class FollowController {
     @RequestMapping("/list")
     @RequiresPermissions("front:follow:list")
     public R list(@RequestParam Map<String, Object> params){
-        List<FollowUser> follows = followService.listFollowUser(params);
-        List<FollowUser> followeds = followService.listFollowedUser(params);
+        Long userId = getUserId();
+        List<FollowUser> follows = followService.listFollowUser(params, userId);
+        List<FollowUser> followeds = followService.listFollowedUser(params, userId);
         R result = R.ok();
         result.put("follow", follows);
         result.put("followeds", followeds);
