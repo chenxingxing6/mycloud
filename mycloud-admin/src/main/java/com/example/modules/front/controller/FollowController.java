@@ -37,7 +37,7 @@ public class FollowController extends AbstractController {
     private FollowService followService;
 
     /**
-     * 列表
+     * 列表（已关注和未关注）
      */
     @RequestMapping("/list")
     @RequiresPermissions("front:follow:list")
@@ -48,7 +48,7 @@ public class FollowController extends AbstractController {
         R result = R.ok();
         result.put("follow", follows);
         result.put("followeds", followeds);
-        return R.ok().put("data", result);
+        return result;
     }
 
 

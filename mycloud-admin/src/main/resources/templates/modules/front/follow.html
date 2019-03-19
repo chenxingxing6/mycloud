@@ -14,22 +14,30 @@
             <a class="btn btn-default" @click="query">搜索</a>
         </div>
         <div>
-            <h1>未关注的用户</h1>
-            <p>用户头像：</p>
-            <p>用户名：</p>
-            <p>用户ID:</p>
-        </div>
-        <div>
-            <h1>已关注的用户</h1>
-            <p>用户头像：</p>
-            <p>用户名：</p>
-            <p>用户ID:</p>
+            <div>
+                <h2>未关注的用户</h2>
+                <ul>
+                    <li v-for="info in followeds">
+                        用户名：{{ info.userName }}
+                        用户头像：{{ info.imgPath }}
+                        用户ID：{{ info.followUserId }}
+                    </li>
+                </ul>
+                <h2>已关注的用户</h2>
+                <ul>
+                    <li v-for="info in follow">
+                        用户名：{{ info.userName }}
+                        用户头像：{{ info.imgPath }}
+                        用户ID：{{ info.followUserId }}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <div v-show="!showList" class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
-        <form class="form-horizontal">
+       <!-- <form class="form-horizontal">
 					<div class="form-group">
                         <div class="col-sm-2 control-label">用户ID</div>
                         <div class="col-sm-10">
@@ -83,10 +91,15 @@
                 <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
             </div>
-        </form>
+        </form>-->
     </div>
 </div>
 
+<script src="${request.contextPath}/statics/libs/jquery.min.js"></script>
+<script src="${request.contextPath}/statics/libs/vue.min.js"></script>
+<script src="${request.contextPath}/statics/libs/router.js"></script>
+<script src="${request.contextPath}/statics/libs/bootstrap.min.js"></script>
 <script src="${request.contextPath}/statics/js/modules/front/follow.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/libs/app.js"></script>
 </body>
 </html>

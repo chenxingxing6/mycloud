@@ -43,11 +43,11 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
     public List<FollowUser> listFollowUser(Map<String, Object> params, Long userId) {
         List<FollowUser> resultList = new ArrayList<>();
         List<FollowEntity> followEntities = innerListFollowEntity(params, userId);
-        if (CollectionUtils.isEmpty(followEntities)){
-            return resultList;
-        }
         //已关注的用户
         List<Long> followedUserIds = followEntities.stream().map(e->e.getToUserId()).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(followedUserIds)){
+            followedUserIds = new ArrayList<>();
+        }
         //自己本身也加上
         followedUserIds.add(userId);
 

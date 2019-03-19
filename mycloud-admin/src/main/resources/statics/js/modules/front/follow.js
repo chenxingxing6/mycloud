@@ -46,11 +46,36 @@ var vm = new Vue({
 		showList: true,
 		title: null,
         username: null,
-		follow: {}
+		followeds: [],
+		follow: []
+	},
+	created(){
+        this.initData();
 	},
 	methods: {
+        initData: function(){
+            $.get(baseURL + "front/follow/list/", function(r){
+                vm.follow = r.follow;
+                vm.followeds = r.followeds;
+            });
+        },
 		query: function () {
-			vm.reload();
+            $.ajax({
+                type: "GET",
+                url: baseURL + "front/follow/list",
+                contentType: "application/json",
+                data: JSON.stringify(vm.username),
+                success: function(r) {
+                    if (r.code === 0) {
+                        this.followeds = r.data.followeds;
+                        this.follow = r.data.follow;
+                        console.log(this.followeds)
+                        console.log(this.follow)
+                    }else{
+                    	alert(r.msg);
+					}
+                }
+            });
 		},
 		add: function(){
 			vm.showList = false;
