@@ -1,6 +1,8 @@
 package com.example.modules.front.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -26,4 +28,9 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileDao, UserFileEntity
         return new PageUtils(page);
     }
 
+    @Override
+    public List<UserFileEntity> getFilesByUserId(Long userId) {
+        return this.selectList(new EntityWrapper<UserFileEntity>()
+        .eq(userId !=null, "user_id", userId));
+    }
 }
