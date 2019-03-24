@@ -5,6 +5,7 @@ import com.example.common.utils.IdGen;
 import com.example.modules.front.dao.HdfsDao;
 import com.example.modules.front.entity.UserFileEntity;
 import com.example.modules.front.service.UserFileService;
+import com.example.modules.front.vo.FileVo;
 import com.example.modules.sys.entity.SysUserEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ import javax.annotation.Resource;
 
 @Service("fileService")
 public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements FileService {
-    final static IdGen idGen = IdGen.get();
+    @Resource
+    private IdGen idGen;
     @Resource
     private UserFileService userFileService;
     @Resource
@@ -42,7 +44,6 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
                 new Query<FileEntity>(params).getPage(),
                 new EntityWrapper<FileEntity>()
         );
-
         return new PageUtils(page);
     }
 
@@ -53,7 +54,8 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
             return new ArrayList<>();
         }
         List<Long> fileIds = userFileEntities.stream().map(e->e.getFileId()).collect(Collectors.toList());
-        return this.selectBatchIds(fileIds);
+        List<FileEntity> fileEntities = this.selectBatchIds(fileIds);
+        return fileEntities.stream().filter(e->e.getParentId().equals(parentId)).collect(Collectors.toList());
     }
 
     @Override
@@ -79,26 +81,29 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
-    public void deleteFileRecursion(SysUserEntity user, FileEntity file, long parentid) {
+    public void deleteFileRecursion(SysUserEntity user, FileEntity file) {
+        if (file.getType().equals(FileEnum.FILE.getType())){
+            this.deleteById(file.getId());
+            userFileService.delete(new EntityWrapper<UserFileEntity>().eq("user_id", user.getUserId()).and().eq("file_id", file.getId()));
+            return;
+        }
         //文件夹
-        if (file.getType().equals(FileEnum.FOLDER.getType())){
-            List<UserFileEntity> userFileEntities = userFileService.getFilesByUserId(user.getUserId());
-            if (CollectionUtils.isEmpty(userFileEntities)){
+        else if (file.getType().equals(FileEnum.FOLDER.getType())){
+            //获取该文件下的子文件
+            List<FileEntity> fileEntities = getFileList(user, file.getId());
+            //该目录下没有文件，删除目录
+            if (CollectionUtils.isEmpty(fileEntities)){
+                this.deleteById(file.getId());
+                userFileService.delete(new EntityWrapper<UserFileEntity>().eq("user_id", user.getUserId()).and().eq("file_id", file.getId()));
                 return;
             }
-            List<Long> fileIds = userFileEntities.stream().map(e->e.getFileId()).collect(Collectors.toList());
-            //查询该目录下的子文件
-            List<FileEntity> files = this.selectBatchIds(fileIds);
-            for (FileEntity fileEntity : files) {
-                if (fileEntity.getParentId().equals(parentid)){
-                    deleteFileRecursion(user, file, parentid);
+            for (FileEntity subFile : fileEntities) {
+                if (subFile.getType().equals(FileEnum.FILE)){
+                    deleteFileRecursion(user, subFile);
                 }
+                this.deleteById(subFile.getId());
+                userFileService.delete(new EntityWrapper<UserFileEntity>().eq("user_id", user.getUserId()).and().eq("file_id", subFile.getId()));
             }
-
         }
-        //文件
-        this.deleteById(file.getId());
-        userFileService.delete(new EntityWrapper<UserFileEntity>()
-        .eq("user_id", user.getUserId()).and().eq("file_id", file.getId()));
     }
 }

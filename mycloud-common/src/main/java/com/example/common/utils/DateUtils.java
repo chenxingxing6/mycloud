@@ -1,5 +1,6 @@
 package com.example.common.utils;
 
+import com.example.common.exception.BizException;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -43,6 +44,16 @@ public class DateUtils {
         }
         return null;
     }
+
+    public static String format(Long timeStamp, String pattern) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(pattern);
+            return df.format(timeStamp);
+        } catch (Exception e) {
+            throw new BizException("时间转换出错");
+        }
+    }
+
 
     /**
      * 字符串转换成日期

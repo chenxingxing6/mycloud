@@ -1,5 +1,6 @@
 package com.example.modules.front.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +9,16 @@ import java.util.stream.Collectors;
 import com.example.common.constants.FileEnum;
 import com.example.common.constants.ViewEnum;
 import com.example.common.exception.BizException;
+import com.example.common.utils.DateUtils;
 import com.example.common.utils.IdGen;
 import com.example.common.validator.Assert;
 import com.example.common.validator.ValidatorUtils;
+import com.example.modules.front.vo.FileVo;
 import com.example.modules.sys.controller.AbstractController;
 import com.example.modules.sys.entity.SysUserEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +55,17 @@ public class FileController extends AbstractController {
     @RequiresPermissions("front:file:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = fileService.queryPage(params);
-
+        List<FileEntity> fileEntities = (List<FileEntity>)page.getList();
+        List<FileVo> fileVos = new ArrayList<>();
+        for (FileEntity fileEntity : fileEntities) {
+            FileVo fileVo = new FileVo();
+            BeanUtils.copyProperties(fileEntity, fileVo);
+            fileVo.setOpTime(DateUtils.format(fileEntity.getOpTime(), DateUtils.DATE_TIME_PATTERN));
+            fileVo.setId(fileEntity.getId().toString());
+            fileVo.setParentId(fileEntity.getParentId().toString());
+            fileVos.add(fileVo);
+        }
+        page.setList(fileVos);
         return R.ok().put("page", page);
     }
 
@@ -107,14 +121,16 @@ public class FileController extends AbstractController {
      * @param dirName     文件路径名   /39166745223986
      * @param originalDir 原始文件路径 /file
      * @param mkdir       文件夹名     /a
-     * @param parentid    父文件ID
+     * @param parentd    父文件ID
      * @return
      */
-    @RequestMapping("createFile")
+    @RequestMapping("/createFile")
     public R createFile(@RequestParam(value="dirName") String dirName,
                         @RequestParam(value="originalDir") String originalDir,
                         @RequestParam(value="mkdir") String mkdir,
-                        @RequestParam(value="parentid") long parentid){
+                        @RequestParam(value="parentId") String parentId){
+        Assert.isBlank(mkdir, "文件名不能为空");
+        Long parentid = Long.valueOf(parentId);
         //封装文件对象
         FileEntity file = new FileEntity();
         file.setId(idGen.nextId());
@@ -129,6 +145,8 @@ public class FileController extends AbstractController {
         file.setViewFlag(ViewEnum.N.getType());
         file.setCreateTime(System.currentTimeMillis());
         file.setCreateUser(user.getUserId().toString());
+        file.setOpTime(System.currentTimeMillis());
+        file.setOpUser(user.getUserId().toString());
         if (dirName.equals("/")){
             file.setPath(dirName + name);
             file.setOriginalPath(originalDir + mkdir);
@@ -150,6 +168,9 @@ public class FileController extends AbstractController {
                 }
             }
             if (flag){
+                fileService.makeFolder(file, user, parentid);
+                r.put("msg", "创建文件夹成功");
+            }else {
                 throw new BizException("文件夹已经存在");
             }
         }
@@ -159,12 +180,11 @@ public class FileController extends AbstractController {
     /**
      * 删除文件或者文件夹
      * @param ids
-     * @param parentid
+     * @param parentId
      * @return
      */
     @RequestMapping("/deleteFileOrFolder")
-    public R deleteFileOrFolder(@RequestParam(value="ids") Long[] ids,
-                                @RequestParam(value="parentid") long parentid) {
+    public R deleteFileOrFolder(@RequestBody Long[] ids) {
         if (ids.length ==0){
             throw new BizException("删除条数为空");
         }
@@ -184,7 +204,7 @@ public class FileController extends AbstractController {
                 fileService.deleteHdfs(user, file);
 
                 //递归删除file和user_file文件
-                fileService.deleteFileRecursion(user, file, parentid);
+                fileService.deleteFileRecursion(user, file);
             }
             r.put("msg", "删除成功！");
         } catch (Exception e) {

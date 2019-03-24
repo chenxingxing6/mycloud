@@ -4,17 +4,35 @@ $(function () {
         datatype: "json",
         colModel: [
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true, hidden:true },
-			{ label: '文件名', name: 'name', index: 'name', width: 80 ,
+			{ label: '文件名', name: 'originalName', index: 'originalName', width: 80 ,
 				formatter: function (value, grid, rows, state) {
-                    return '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">'+value+'</a>';
+				    var type = rows.type;
+				    if (type == '0'){
+                        return '<a href="javascript:void(0)" onclick="vm.subFile('+rows.id+')" style="color:blue;">'+value+'</a>';
+                    }
+                    return value;
                 }},
-			{ label: '大小', name: 'length', index: 'length', width: 80 },
+			{ label: '大小', name: 'length', index: 'length', width: 80,
+                formatter: function (value, grid, rows, state) {
+				    var type = rows.type;
+				    if (type == '0'){
+				    	return "文件夹";
+					}
+                    return value;
+                }},
 			{ label: '修改时间', name: 'opTime', index: 'op_time', width: 80},
             { label: '其他', name: 'viewFlag', index: 'view_flag', width: 80,
 				formatter: function (value, grid, rows, state) {
-                    return '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">编辑 </a>' +
-                    '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">查看 </a>' +
-                    '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">下载 </a>';
+            	    var result = '';
+            	    var type = rows.type;
+            	    var viewFlag = rows.viewFlag;
+                    result = '<a href="javascript:void(0);" style="color:#f60" onclick="vm.reName(\'' + rows.id + '\');">编辑 </a>';
+            	    if (type == '1'){
+                        '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">下载 </a>'
+					}else if (viewFlag ==1) {
+                        result = result+ '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">查看 </a>';
+					}
+                    return result;
                 }}
         ],
 		viewrecords: true,
@@ -48,17 +66,56 @@ var vm = new Vue({
 	el:'#rrapp',
 	data:{
 		showList: true,
-		title: null,
+		showMkdir: false,
+        showUpload: false,
+        dirName: "/",
+        originalDir: "/",
+        mkdir: null,
+        parentId: 0,
+        title: null,
 		file: {}
 	},
 	methods: {
 		query: function () {
 			vm.reload();
 		},
-		add: function(){
+        mkdirView: function(){
+			vm.showMkdir = true;
+            vm.showList = false;
+			vm.title = '创建文件夹';
+            vm.file = {};
+		},
+        createFile: function(){
+			if (vm.mkdir === null || vm.mkdir === ''){
+                alert("文件名不能为空");
+            }
+            $.ajax({
+                type: "POST",
+                url: baseURL + "front/file/createFile",
+				dataType: 'json',
+                data: {"dirName": vm.dirName, "originalDir" : vm.originalDir, "mkdir": vm.mkdir, "parentId": vm.parentId},
+                success: function(r){
+                    if(r.code === 0){
+                        alert('创建成功', function(index){
+                            vm.reload();
+                        });
+                    }else{
+                        alert(r.msg);
+                    }
+                }
+            });
+        },
+		uploadFile: function(){
 			vm.showList = false;
-			vm.title = "新增";
+			vm.showUpload = true;
+			vm.title = "上传文件";
 			vm.file = {};
+		},
+        subFile: function(id){
+			console.log("parentId:"+id);
+		},
+        reName: function(id){
+			console.log("reName:"+id);
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -97,7 +154,7 @@ var vm = new Vue({
 			confirm('确定要删除选中的记录？', function(){
 				$.ajax({
 					type: "POST",
-				    url: baseURL + "front/file/delete",
+				    url: baseURL + "front/file/deleteFileOrFolder",
                     contentType: "application/json",
 				    data: JSON.stringify(ids),
 				    success: function(r){
@@ -119,6 +176,8 @@ var vm = new Vue({
 		},
 		reload: function (event) {
 			vm.showList = true;
+			vm.showMkdir = false;
+			vm.showUpload = false;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
 			$("#jqGrid").jqGrid('setGridParam',{
                 page:page

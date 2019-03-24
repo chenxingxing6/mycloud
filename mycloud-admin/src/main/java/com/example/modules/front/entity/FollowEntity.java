@@ -2,13 +2,14 @@ package com.example.modules.front.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 关注用户表
- * 
+ *
  * @author lanxinghua
  * @email lanxinghua@2dfire.com
  * @date 2019-03-17 21:38:15
@@ -20,7 +21,7 @@ public class FollowEntity implements Serializable {
 	/**
 	 * ID
 	 */
-	@TableId
+	@TableId(value = "id", type = IdType.INPUT)
 	private Long id;
 	/**
 	 * 用户ID

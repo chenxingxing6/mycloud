@@ -8,15 +8,9 @@
 <div id="rrapp" v-cloak>
     <div v-show="showList">
         <div class="grid-btn">
-			<#if shiro.hasPermission("front:file:save")>
-            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;上传文件</a>
-			</#if>
-			<#if shiro.hasPermission("front:file:update")>
-            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;创建文件夹</a>
-			</#if>
-			<#if shiro.hasPermission("front:file:delete")>
+            <a class="btn btn-primary" @click="uploadFile"><i class="fa fa-plus"></i>&nbsp;上传文件</a>
+            <a class="btn btn-primary" @click="mkdirView"><i class="fa fa-pencil-square-o"></i>&nbsp;创建文件夹</a>
             <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
-			</#if>
             <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;分享</a>
             <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;复制</a>
             <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;移动</a>
@@ -25,7 +19,24 @@
         <div id="jqGridPager"></div>
     </div>
 
-    <div v-show="!showList" class="panel panel-default">
+    <div v-show="showMkdir" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">文件夹名</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="mkdir" placeholder="文件夹名"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="createFile" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+
+    <div v-show="showUpload" class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
         <form class="form-horizontal">
 					<div class="form-group">
@@ -64,55 +75,7 @@
                             <input type="text" class="form-control" v-model="file.length" placeholder="文件长度 73.1"/>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">文件类型  0：目录  1：文件</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.type" placeholder="文件类型  0：目录  1：文件"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">是否可用看</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.viewFlag" placeholder="是否可用看"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">是否有效</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.isValid" placeholder="是否有效"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">登录者</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.createUser" placeholder="登录者"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">登录时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.createTime" placeholder="登录时间"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">更新者</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.opUser" placeholder="更新者"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">更新时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.opTime" placeholder="更新时间"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">版本号</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="file.lastVer" placeholder="版本号"/>
-                        </div>
-                    </div>
-							            <div class="form-group">
+					<div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>

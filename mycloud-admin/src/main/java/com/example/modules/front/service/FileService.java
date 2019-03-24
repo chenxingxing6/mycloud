@@ -49,9 +49,8 @@ public interface FileService extends IService<FileEntity> {
      * 递归删除file表和user_file表的文件信息，删除文件或目录时使用
      * @param user
      * @param file
-     * @param parentid
      */
-    public void deleteFileRecursion(SysUserEntity user, FileEntity file, long parentid);
+    public void deleteFileRecursion(SysUserEntity user, FileEntity file);
 
 }
 
