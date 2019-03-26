@@ -29,17 +29,24 @@ public class UserServiceImpl extends ServiceImpl<UserDao, SysUserEntity> impleme
     }
 
     @Override
+    public SysUserEntity queryByUserName(String userName) {
+        SysUserEntity user = new SysUserEntity();
+        user.setUsername(userName);
+        return baseMapper.selectOne(user);
+    }
+
+    @Override
     public Map<String, Object> login(LoginForm form) {
-       /* UserEntity user = queryByMobile(form.getMobile());
-        Assert.isNull(user, "手机号或密码错误");
+        SysUserEntity user = queryByUserName(form.getUsername());
+        Assert.isNull(user, "账号或密码错误");
         //密码错误
         if (!user.getPassword().equals(DigestUtils.sha256Hex(form.getPassword()))) {
-            throw new BizException("手机号或密码错误");
+            throw new BizException("账号或密码错误");
         }
         //获取登录token
-        String token = tokenService.createToken(user.getUserId());*/
+        String token = tokenService.createToken(user.getUserId());
         Map<String, Object> map = new HashMap<>(2);
-        //map.put("token", token);
+        map.put("token", token);
         return map;
     }
 }

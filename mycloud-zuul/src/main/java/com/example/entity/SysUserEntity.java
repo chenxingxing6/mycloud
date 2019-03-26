@@ -36,6 +36,12 @@ public class SysUserEntity implements Serializable {
 	private String username;
 
 	/**
+	 * 头像
+	 */
+	private String imgPath;
+
+
+	/**
 	 * 密码
 	 */
 	@NotBlank(message="密码不能为空", groups = AddGroup.class)
@@ -135,6 +141,14 @@ public class SysUserEntity implements Serializable {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
 	}
 
 	/**

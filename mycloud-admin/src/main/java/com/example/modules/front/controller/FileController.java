@@ -17,6 +17,7 @@ import com.example.modules.front.vo.FileVo;
 import com.example.modules.sys.controller.AbstractController;
 import com.example.modules.sys.entity.SysUserEntity;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class FileController extends AbstractController {
     @RequestMapping("/list")
     @RequiresPermissions("front:file:list")
     public R list(@RequestParam Map<String, Object> params){
+        Long parentId = (Long) params.get("parentId");
         PageUtils page = fileService.queryPage(params);
         List<FileEntity> fileEntities = (List<FileEntity>)page.getList();
         List<FileVo> fileVos = new ArrayList<>();
@@ -81,65 +83,32 @@ public class FileController extends AbstractController {
         return R.ok().put("file", file);
     }
 
-    /**
-     * 保存
-     */
-    @RequestMapping("/save")
-    @RequiresPermissions("front:file:save")
-    public R save(@RequestBody FileEntity file){
-        fileService.insert(file);
-        return R.ok();
-    }
-
-    /**
-     * 修改
-     */
-    @RequestMapping("/update")
-    @RequiresPermissions("front:file:update")
-    public R update(@RequestBody FileEntity file){
-        ValidatorUtils.validateEntity(file);
-        fileService.updateAllColumnById(file);//全部更新
-
-        return R.ok();
-    }
-
-    /**
-     * 删除
-     */
-    @RequestMapping("/delete")
-    @RequiresPermissions("front:file:delete")
-    public R delete(@RequestBody Long[] ids){
-        fileService.deleteBatchIds(Arrays.asList(ids));
-
-        return R.ok();
-    }
-
 
     /**
      * 创建文件
      *
-     * @param dirName     文件路径名   /39166745223986
-     * @param originalDir 原始文件路径 /file
-     * @param mkdir       文件夹名     /a
-     * @param parentd    父文件ID
+     * @param file
+     * @param dirName      文件路径名   /39166745223986
+     * @param originalDir  原始文件路径 /file
+     * @param parentId     父文件ID
      * @return
      */
     @RequestMapping("/createFile")
-    public R createFile(@RequestParam(value="dirName") String dirName,
+    public R createFile(@RequestBody FileEntity file,
+                        @RequestParam(value="dirName") String dirName,
                         @RequestParam(value="originalDir") String originalDir,
-                        @RequestParam(value="mkdir") String mkdir,
                         @RequestParam(value="parentId") String parentId){
-        Assert.isBlank(mkdir, "文件名不能为空");
+        String fileName = file.getOriginalName();
+        Assert.isBlank(fileName, "文件名不能为空");
         Long parentid = Long.valueOf(parentId);
         //封装文件对象
-        FileEntity file = new FileEntity();
         file.setId(idGen.nextId());
         SysUserEntity user = getUser();
         file.setType(FileEnum.FOLDER.getType());
         //另取文件名
         String name = System.nanoTime() + "";
         file.setName(name);
-        file.setOriginalName(mkdir);
+        file.setOriginalName(fileName);
         file.setParentId(parentid);
         file.setLength("0");
         file.setViewFlag(ViewEnum.N.getType());
@@ -149,10 +118,10 @@ public class FileController extends AbstractController {
         file.setOpUser(user.getUserId().toString());
         if (dirName.equals("/")){
             file.setPath(dirName + name);
-            file.setOriginalPath(originalDir + mkdir);
+            file.setOriginalPath(originalDir + fileName);
         }else {
             file.setPath(dirName + "/"+ name);
-            file.setOriginalPath(originalDir +"/"+ mkdir);
+            file.setOriginalPath(originalDir +"/"+ fileName);
         }
         R r = new R();
         List<FileEntity> fileList = fileService.getFileList(user, parentid);
@@ -178,9 +147,22 @@ public class FileController extends AbstractController {
     }
 
     /**
+     * 修改文件或文件夹
+     */
+    @RequestMapping("/updateFile")
+    public R updateFile(@RequestBody FileEntity file){
+        if (StringUtils.isEmpty(file.getOriginalName())){
+            throw new BizException("文件名不能为空");
+        }
+        file.setOpTime(System.currentTimeMillis());
+        file.setOpUser(getUserId().toString());
+        fileService.updateById(file);
+        return R.ok();
+    }
+
+    /**
      * 删除文件或者文件夹
      * @param ids
-     * @param parentId
      * @return
      */
     @RequestMapping("/deleteFileOrFolder")
