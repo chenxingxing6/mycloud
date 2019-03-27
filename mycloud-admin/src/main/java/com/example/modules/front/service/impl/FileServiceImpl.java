@@ -39,17 +39,16 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     private HdfsDao hdfsDao;
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
-        Page<FileEntity> page = this.selectPage(
-                new Query<FileEntity>(params).getPage(),
-                new EntityWrapper<FileEntity>()
-        );
-        return new PageUtils(page);
+    public PageUtils queryPage(Map<String, Object> params, Long userId) {
+        Query query = new Query<FileEntity>(params);
+        long parentId = Long.valueOf(params.get("parentId").toString());
+        List<FileEntity> fileEntities = getFileList(userId, parentId);
+        return new PageUtils(fileEntities, fileEntities.size(), query.getLimit(), query.getCurrPage());
     }
 
     @Override
-    public List<FileEntity> getFileList(SysUserEntity user, long parentId) {
-        List<UserFileEntity> userFileEntities = userFileService.getFilesByUserId(user.getUserId());
+    public List<FileEntity> getFileList(long userId, long parentId) {
+        List<UserFileEntity> userFileEntities = userFileService.getFilesByUserId(userId);
         if (CollectionUtils.isEmpty(userFileEntities)){
             return new ArrayList<>();
         }
@@ -90,7 +89,7 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
         //文件夹
         else if (file.getType().equals(FileEnum.FOLDER.getType())){
             //获取该文件下的子文件
-            List<FileEntity> fileEntities = getFileList(user, file.getId());
+            List<FileEntity> fileEntities = getFileList(user.getUserId(), file.getId());
             //该目录下没有文件，删除目录
             if (CollectionUtils.isEmpty(fileEntities)){
                 this.deleteById(file.getId());

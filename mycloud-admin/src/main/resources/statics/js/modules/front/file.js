@@ -36,19 +36,19 @@ $(function () {
                 }}
         ],
 		viewrecords: true,
-        height: 385,
-        rowNum: 10,
+        height: 400,
+        rowNum: -1,
 		rowList : [10,30,50],
         rownumbers: true,
         rownumWidth: 25,
         autowidth:true,
         multiselect: true,
-        pager: "#jqGridPager",
+        //pager: "#jqGridPager",
         jsonReader : {
             root: "page.list",
             page: "page.currPage",
             total: "page.totalPage",
-            records: "page.totalCount"
+            records: "page.totalCount",
         },
         prmNames : {
             page:"page",
@@ -99,7 +99,9 @@ var vm = new Vue({
 			vm.file = {};
 		},
         subFile: function(id){
-			console.log("parentId:"+id);
+            vm.parentId = id;
+            vm.reload();
+			console.log("parentId:"+vm.parentId);
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -163,9 +165,12 @@ var vm = new Vue({
 			vm.showList = true;
 			vm.showMkdir = false;
 			vm.showUpload = false;
+			var url = baseURL + 'front/file/list?parentId='+vm.parentId;
+			console.log(url);
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
 			$("#jqGrid").jqGrid('setGridParam',{
-                page:page
+                page:page,
+				url:url
             }).trigger("reloadGrid");
 		}
 	}

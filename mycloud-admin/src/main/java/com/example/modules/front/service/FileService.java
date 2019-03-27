@@ -18,16 +18,16 @@ import java.util.Map;
  */
 public interface FileService extends IService<FileEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(Map<String, Object> params, Long userId);
 
     /**
      * 获取文件列表，查看文件或目录列表
      *
-     * @param user
+     * @param userId
      * @param parentId
      * @return
      */
-    public List<FileEntity> getFileList(SysUserEntity user, long parentId);
+    public List<FileEntity> getFileList(long userId, long parentId);
 
 
     /**

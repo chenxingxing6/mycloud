@@ -55,8 +55,9 @@ public class FileController extends AbstractController {
     @RequestMapping("/list")
     @RequiresPermissions("front:file:list")
     public R list(@RequestParam Map<String, Object> params){
-        Long parentId = (Long) params.get("parentId");
-        PageUtils page = fileService.queryPage(params);
+        //根据父ID,用户ID
+        Long userId = getUserId();
+        PageUtils page = fileService.queryPage(params, userId);
         List<FileEntity> fileEntities = (List<FileEntity>)page.getList();
         List<FileVo> fileVos = new ArrayList<>();
         for (FileEntity fileEntity : fileEntities) {
@@ -124,7 +125,7 @@ public class FileController extends AbstractController {
             file.setOriginalPath(originalDir +"/"+ fileName);
         }
         R r = new R();
-        List<FileEntity> fileList = fileService.getFileList(user, parentid);
+        List<FileEntity> fileList = fileService.getFileList(user.getUserId(), parentid);
         if (CollectionUtils.isEmpty(fileList)){
             fileService.makeFolder(file, user, parentid);
             r.put("msg", "创建文件夹成功");
