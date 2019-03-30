@@ -1,6 +1,6 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'front/file/list',
+        url: baseURL + 'front/file/list?parentId='+vm.parentId,
         datatype: "json",
         colModel: [
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true, hidden:true },
@@ -26,7 +26,7 @@ $(function () {
             	    var result = '';
             	    var type = rows.type;
             	    var viewFlag = rows.viewFlag;
-                    result = '<a href="javascript:void(0);" style="color:#f60" onclick="vm.reName(\'' + rows.id + '\');">编辑 </a>';
+                    result = '<a href="javascript:void(0);" style="color:#f60" onclick="vm.reNameView(\'' + rows.id + '\', \'' + rows.originalName + '\');">编辑 </a>';
             	    if (type == '1'){
                         '<a href="javascript:void(0);" style="color:#f60" onclick="modify(\'' + rows.id + '\');">下载 </a>'
 					}else if (viewFlag ==1) {
@@ -36,19 +36,19 @@ $(function () {
                 }}
         ],
 		viewrecords: true,
-        height: 385,
-        rowNum: 10,
+        height: 400,
+        rowNum: -1,
 		rowList : [10,30,50],
         rownumbers: true,
         rownumWidth: 25,
         autowidth:true,
         multiselect: true,
-        pager: "#jqGridPager",
+        //pager: "#jqGridPager",
         jsonReader : {
             root: "page.list",
             page: "page.currPage",
             total: "page.totalPage",
-            records: "page.totalCount"
+            records: "page.totalCount",
         },
         prmNames : {
             page:"page",
@@ -70,7 +70,6 @@ var vm = new Vue({
         showUpload: false,
         dirName: "/",
         originalDir: "/",
-        mkdir: null,
         parentId: 0,
         title: null,
 		file: {}
@@ -85,25 +84,13 @@ var vm = new Vue({
 			vm.title = '创建文件夹';
             vm.file = {};
 		},
-        createFile: function(){
-			if (vm.mkdir === null || vm.mkdir === ''){
-                alert("文件名不能为空");
-            }
-            $.ajax({
-                type: "POST",
-                url: baseURL + "front/file/createFile",
-				dataType: 'json',
-                data: {"dirName": vm.dirName, "originalDir" : vm.originalDir, "mkdir": vm.mkdir, "parentId": vm.parentId},
-                success: function(r){
-                    if(r.code === 0){
-                        alert('创建成功', function(index){
-                            vm.reload();
-                        });
-                    }else{
-                        alert(r.msg);
-                    }
-                }
-            });
+        reNameView: function(id, originalName){
+            console.log("id:"+id+"---name:"+originalName);
+            vm.showMkdir = true;
+            vm.showList = false;
+            vm.title = '重名名';
+            vm.file.id = id;
+            vm.file.originalName = originalName;
         },
 		uploadFile: function(){
 			vm.showList = false;
@@ -112,10 +99,9 @@ var vm = new Vue({
 			vm.file = {};
 		},
         subFile: function(id){
-			console.log("parentId:"+id);
-		},
-        reName: function(id){
-			console.log("reName:"+id);
+            vm.parentId = id;
+            vm.reload();
+			console.log("parentId:"+vm.parentId);
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -128,7 +114,8 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
-			var url = vm.file.id == null ? "front/file/save" : "front/file/update";
+        	var creatUrl = "front/file/createFile?dirName="+vm.dirName+"&originalDir="+vm.originalDir+"&parentId="+vm.parentId;
+			var url = vm.file.id == null ? creatUrl : "front/file/updateFile";
 			$.ajax({
 				type: "POST",
 			    url: baseURL + url,
@@ -178,9 +165,12 @@ var vm = new Vue({
 			vm.showList = true;
 			vm.showMkdir = false;
 			vm.showUpload = false;
+			var url = baseURL + 'front/file/list?parentId='+vm.parentId;
+			console.log(url);
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
 			$("#jqGrid").jqGrid('setGridParam',{
-                page:page
+                page:page,
+				url:url
             }).trigger("reloadGrid");
 		}
 	}

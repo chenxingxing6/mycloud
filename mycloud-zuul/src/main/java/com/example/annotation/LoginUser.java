@@ -7,9 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * 登录用户信息
- *
- * @author chenshun
- * @date 2019/2/05 14:30
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

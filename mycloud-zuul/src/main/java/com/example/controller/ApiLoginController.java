@@ -32,10 +32,10 @@ public class ApiLoginController {
         ValidatorUtils.validateEntity(form);
         //用户登录
         Map<String, Object> map = userService.login(form);
-        map.put("token", "6534634");
         return R.ok(map);
     }
 
+    @Login
     @GetMapping("logout")
     public R logout(@RequestHeader("token") String token){
         tokenService.cleanToken(token);

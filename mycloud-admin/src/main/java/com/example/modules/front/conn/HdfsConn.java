@@ -27,7 +27,7 @@ public class HdfsConn {
         try {
             configuration = new Configuration();
             configuration.set("fs.defaultFS", serverUrl);
-            System.setProperty("HADOOP_USER_NAME", "root");
+            System.setProperty("HADOOP_USER_NAME", "hdfs");
             System.setProperty("hadoop.home.dir", HADOOP_HOME);
             configuration.set("dfs.permissions", "false");
             fileSystem = FileSystem.get(configuration);
