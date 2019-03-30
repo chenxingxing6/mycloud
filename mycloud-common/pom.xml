@@ -18,6 +18,13 @@
         <finalName>${project.artifactId}</finalName>
     </build>
 
+    <properties>
+        <commons.io.version>2.5</commons.io.version>
+        <joda.time.version>2.9.9</joda.time.version>
+        <mybatisplus.version>2.1.9</mybatisplus.version>
+        <mybatisplus.spring.boot.version>1.0.5</mybatisplus.spring.boot.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -29,6 +36,7 @@
             <artifactId>mybatisplus-spring-boot-starter</artifactId>
             <version>${mybatisplus.spring.boot.version}</version>
         </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
