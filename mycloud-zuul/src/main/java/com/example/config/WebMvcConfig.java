@@ -32,8 +32,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         argumentResolvers.add(loginUserHandlerMethodArgumentResolver);
     }
 
+    //允许全部请求跨域
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**");
+        registry.addMapping("/api/**")
+        .allowedMethods("GET", "POST","OPTIONS")
+        .allowCredentials(true).maxAge(3600);
     }
 }

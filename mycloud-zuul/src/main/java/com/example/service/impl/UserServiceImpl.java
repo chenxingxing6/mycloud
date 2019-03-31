@@ -1,10 +1,8 @@
 package com.example.service.impl;
 
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.example.common.exception.BizException;
 import com.example.common.validator.Assert;
-import com.example.dao.UserDao;
 import com.example.entity.SysUserEntity;
 import com.example.form.LoginForm;
 import com.example.service.TokenService;
@@ -17,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service("userService")
-public class UserServiceImpl extends ServiceImpl<UserDao, SysUserEntity> implements UserService {
+public class UserServiceImpl implements UserService {
     @Autowired
     private TokenService tokenService;
 
@@ -25,14 +23,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, SysUserEntity> impleme
     public SysUserEntity queryByMobile(String mobile) {
         SysUserEntity user = new SysUserEntity();
         user.setMobile(mobile);
-        return baseMapper.selectOne(user);
+        return user;
     }
 
     @Override
     public SysUserEntity queryByUserName(String userName) {
         SysUserEntity user = new SysUserEntity();
         user.setUsername(userName);
-        return baseMapper.selectOne(user);
+        return user;
     }
 
     @Override

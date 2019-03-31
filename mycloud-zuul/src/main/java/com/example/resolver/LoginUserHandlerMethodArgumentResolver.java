@@ -35,7 +35,7 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
             return null;
         }
         //获取用户信息
-        SysUserEntity user = userService.selectById((Long)object);
+        SysUserEntity user = null;
         return user;
     }
 }

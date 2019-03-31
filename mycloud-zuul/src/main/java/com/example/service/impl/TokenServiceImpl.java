@@ -24,7 +24,7 @@ public class TokenServiceImpl implements TokenService {
     public String createToken(long userId) {
         //生成token
         String token = generateToken();
-        SysUserEntity userEntity = userService.selectById(userId);
+        SysUserEntity userEntity = new SysUserEntity();
         if (userEntity == null) {
             throw new BizException("token生成失败!");
         }
