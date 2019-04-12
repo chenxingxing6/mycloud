@@ -29,8 +29,6 @@ public class ApiLoginController {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private OrderService orderService;
-    @Autowired
     private ILoginService loginService;
 
 
@@ -56,23 +54,22 @@ public class ApiLoginController {
     public R login(@RequestParam Map<String, Object> params){
         String type = MapGet.getByKey("type", params);
         Assert.isBlank(type, "参数错误");
-        R result = null;
+        SysUserEntity userEntity = null;
         //账号登录
         if ("0".equals(type)){
             String username = MapGet.getByKey("account", params);
             String password = MapGet.getByKey("password", params);
-            result = loginService.getUserByAccount(username, password);
+            userEntity = loginService.getUserByAccount(username, password);
         }
         //手机登录
         else if ("1".equals(type)){
             String username = MapGet.getByKey("captcha", params);
             String password = MapGet.getByKey("mobile", params);
-            result = loginService.getUserByMobile(password);
+            userEntity = loginService.getUserByMobile(password);
         }
-        if (result == null || result.get("user") == null){
+        if (userEntity == null){
             throw new BizException("用户账号或密码错误");
         }
-        SysUserEntity userEntity = (SysUserEntity) result.get("user");
 
         //生成token
         String token = tokenService.createToken(userEntity.getUserId());
