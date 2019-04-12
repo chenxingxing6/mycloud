@@ -4,7 +4,6 @@ import com.example.common.utils.R;
 import com.example.common.validator.ValidatorUtils;
 import com.example.entity.SysUserEntity;
 import com.example.form.RegisterForm;
-import com.example.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +19,6 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api")
 public class ApiRegisterController {
-    @Autowired
-    private UserService userService;
 
     @PostMapping("register")
     public R register(@RequestBody RegisterForm form){

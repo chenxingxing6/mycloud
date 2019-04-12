@@ -8,22 +8,22 @@ import java.io.Serializable;
  * Desc: 前端用户
  */
 public class UserVo implements Serializable {
-    private int id;
+    private String id;
     private String username;
     private String password;
     private String imgPath;
     private String email;
     private String mobile;
     private String createTime;
-    private int deptId;
+    private String deptId;
     private String deptName;
     private String companyName;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -75,11 +75,11 @@ public class UserVo implements Serializable {
         this.createTime = createTime;
     }
 
-    public int getDeptId() {
+    public String getDeptId() {
         return deptId;
     }
 
-    public void setDeptId(int deptId) {
+    public void setDeptId(String deptId) {
         this.deptId = deptId;
     }
 

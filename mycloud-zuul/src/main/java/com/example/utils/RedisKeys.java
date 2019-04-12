@@ -9,6 +9,10 @@ package com.example.utils;
 public class RedisKeys {
 
     public static String getTokenKey(String key){
+
         return "token:"+ key;
+    }
+    public static String getCapatchaKey(String key){
+        return "capatcha:"+ key;
     }
 }

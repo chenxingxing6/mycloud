@@ -1,5 +1,6 @@
 package com.example.service;
 
+
 import com.example.entity.SysUserEntity;
 
 /**
@@ -27,4 +28,12 @@ public interface TokenService{
 	 * @return
 	 */
 	SysUserEntity queryByToken(String token);
+
+
+	/**
+	 * 生成验证码
+	 * @param mobile
+	 * @return
+	 */
+	String createCaptcha(String mobile);
 }

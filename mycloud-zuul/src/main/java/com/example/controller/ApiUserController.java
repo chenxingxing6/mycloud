@@ -6,7 +6,6 @@ import com.example.common.utils.R;
 import com.example.common.validator.ValidatorUtils;
 import com.example.form.LoginForm;
 import com.example.service.TokenService;
-import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +17,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/user")
 public class ApiUserController {
-    @Autowired
-    private UserService userService;
     @Autowired
     private TokenService tokenService;
 
