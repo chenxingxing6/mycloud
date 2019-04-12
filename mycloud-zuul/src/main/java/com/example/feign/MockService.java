@@ -10,11 +10,12 @@ import org.springframework.web.client.RestTemplate;
  * Desc: RestTemplate方式请求http
  */
 @Service
-public class OrderService {
+public class MockService {
+    private static final String url = "https://result.eolinker.com/1DVzyqbab364c82aaead42f24de532c4c046e6805221c90?uri=/mock/";
     @Autowired
     private RestTemplate restTemplate;
 
-    public String getTest(){
-        return restTemplate.getForObject("http://localhost:9000/front/login", String.class);
+    public String getData(String path){
+        return restTemplate.getForObject(url + path, String.class);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 首页接口
+ * 首页数据接口
  */
 @RestController
 @RequestMapping("/api")
@@ -17,11 +17,7 @@ public class ApiIndexController {
     @Autowired
     private TokenService tokenService;
 
-    /**
-     * 获取手机验证码
-     * @return
-     */
-    @Login
+ /*   @Login
     @RequestMapping("/getIndexData")
     public R getTest(@RequestHeader("token") String token){
         //todo
@@ -30,5 +26,6 @@ public class ApiIndexController {
                 .put("ranks", "")
                 .put("shareNum", "")
                 .put("fileNum","");
-    }
+
+    }*/
 }
