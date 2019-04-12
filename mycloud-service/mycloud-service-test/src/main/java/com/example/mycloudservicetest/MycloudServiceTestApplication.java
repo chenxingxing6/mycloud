@@ -1,6 +1,5 @@
 package com.example.mycloudservicetest;
 
-import com.baomidou.mybatisplus.MybatisConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -8,16 +7,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@EnableDiscoveryClient
+@EnableEurekaClient
 @SpringBootApplication
 @RestController
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class, MybatisConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,DataSourceTransactionManagerAutoConfiguration.class})
 
 public class MycloudServiceTestApplication {
 
@@ -34,16 +34,9 @@ public class MycloudServiceTestApplication {
 
 	@Value("${server.port}")
 	String port;
-	@RequestMapping("/")
+	@RequestMapping("/getTest")
 	public String home() {
 		return "hello world from port " + port;
-	}
-
-	@Value("${cxx.hello}")
-	String hello;
-	@RequestMapping(value = "/hello")
-	public String hello(){
-		return hello;
 	}
 }
 

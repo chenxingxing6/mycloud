@@ -9,6 +9,8 @@ server:
 # mysql
 spring:
   # 环境 dev|test|prod
+  application:
+    name: service-zuul
   profiles:
     active: dev
   servlet:
@@ -23,7 +25,12 @@ spring:
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
 
 
+#zuul:
+#  routes:
+#    api-a:
+#      path: /api-tag/**
+#      serviceId: tag-client
