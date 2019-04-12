@@ -1,16 +1,13 @@
 package com.example.controller;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.example.annotation.Login;
 import com.example.common.exception.BizException;
 import com.example.common.utils.DateUtils;
 import com.example.common.utils.R;
 import com.example.common.validator.Assert;
 import com.example.entity.SysUserEntity;
-import com.example.feign.ILoginService;
-import com.example.feign.OrderService;
+import com.example.feign.IUserService;
 import com.example.service.TokenService;
 import com.example.utils.MapGet;
 import com.example.vo.UserVo;
@@ -29,7 +26,7 @@ public class ApiLoginController {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private ILoginService loginService;
+    private IUserService userService;
 
 
     /**
@@ -37,6 +34,7 @@ public class ApiLoginController {
      * @param params
      * @return
      */
+    @Login
     @RequestMapping("/getCaptcha")
     public R getTest(@RequestParam Map<String, Object> params){
         String mobile = MapGet.getByKey("mobile", params);
@@ -59,16 +57,19 @@ public class ApiLoginController {
         if ("0".equals(type)){
             String username = MapGet.getByKey("account", params);
             String password = MapGet.getByKey("password", params);
-            userEntity = loginService.getUserByAccount(username, password);
+            userEntity = userService.getUserByAccount(username, password);
         }
         //手机登录
         else if ("1".equals(type)){
-            String username = MapGet.getByKey("captcha", params);
-            String password = MapGet.getByKey("mobile", params);
-            userEntity = loginService.getUserByMobile(password);
+            String captcha = MapGet.getByKey("captcha", params);
+            String mobile = MapGet.getByKey("mobile", params);
+            if (!tokenService.checkCaptcha(mobile, captcha)){
+                throw new BizException("验证码错误请重试！");
+            }
+            userEntity = userService.getUserByMobile(mobile);
         }
         if (userEntity == null){
-            throw new BizException("用户账号或密码错误");
+            throw new BizException("用户账号或密码错误！");
         }
 
         //生成token

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/")
-public class MenuController {
+public class ApiMenuController {
 
     /**
      * 获取菜单

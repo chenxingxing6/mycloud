@@ -64,10 +64,19 @@ public class TokenServiceImpl implements TokenService {
         Object result = redisUtil.get(key);
         if (result == null){
             String capathca = String.valueOf(generateCapatcha());
-            redisUtil.setObject(key, capathca);
+            redisUtil.setObject(key, capathca, 60);
             return capathca;
         }
         return result.toString();
     }
 
+    @Override
+    public boolean checkCaptcha(String mobile, String captcha) {
+        String key = RedisKeys.getCapatchaKey(mobile);
+        Object result = redisUtil.get(key);
+        if (result == null){
+           return false;
+        }
+        return result.toString().equals(captcha);
+    }
 }

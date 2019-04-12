@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 
 @FeignClient(name = "service")
-public interface ILoginService {
+public interface IUserService {
     @RequestMapping(value = "/front/getUserByAccount")
     SysUserEntity getUserByAccount(@RequestParam("username") String username, @RequestParam("password") String password);
 

@@ -36,4 +36,11 @@ public interface TokenService{
 	 * @return
 	 */
 	String createCaptcha(String mobile);
+
+	/**
+	 * 生成验证码
+	 * @param mobile
+	 * @return
+	 */
+	boolean checkCaptcha(String mobile, String captcha);
 }
