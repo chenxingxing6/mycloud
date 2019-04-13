@@ -1,5 +1,6 @@
 package com.example.feign;
 
+import com.example.entity.FileEntity;
 import com.example.entity.ShareEntity;
 import com.example.entity.SysUserEntity;
 import com.example.vo.FileVo;
@@ -36,10 +37,10 @@ public interface IFileService {
      * @return
      */
     @RequestMapping(value = "/front/app/listFileByPage")
-    List<FileVo> listFileByPage(@RequestParam("userId") String userId,
-                            @RequestParam("fileParentId") String fileParentId,
-                            @RequestParam("page") Integer page,
-                            @RequestParam("limit") Integer limit);
+    List<FileEntity> listFileByPage(@RequestParam("userId") String userId,
+                                    @RequestParam("fileParentId") String fileParentId,
+                                    @RequestParam("page") Integer page,
+                                    @RequestParam("limit") Integer limit);
 
     /**
      * 获取总页数
