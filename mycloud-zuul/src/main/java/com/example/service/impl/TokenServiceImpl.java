@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.common.exception.BizException;
 import com.example.entity.SysUserEntity;
+import com.example.feign.IUserService;
 import com.example.service.TokenService;
 import com.example.utils.RedisKeys;
 import com.example.utils.RedisUtil;
@@ -17,6 +18,8 @@ import java.util.UUID;
 public class TokenServiceImpl implements TokenService {
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private IUserService userService;
 
     private final static int EXPIRE = 3600 * 6;//6小时过期
 
@@ -24,8 +27,8 @@ public class TokenServiceImpl implements TokenService {
     public String createToken(long userId) {
         //生成token
         String token = generateToken();
-        SysUserEntity userEntity = new SysUserEntity();
-        if (StringUtils.isEmpty(token)) {
+        SysUserEntity userEntity = userService.getUserByUserId(String.valueOf(userId));
+        if (StringUtils.isEmpty(token) || userEntity == null) {
             throw new BizException("token生成失败!");
         }
         redisUtil.setObject(token, userEntity, EXPIRE);

@@ -48,7 +48,7 @@ public class ApiLoginController {
      * @param params
      * @return
      */
-    @PostMapping("login")
+    @PostMapping("/login")
     public R login(@RequestParam Map<String, Object> params){
         String type = MapGet.getByKey("type", params);
         Assert.isBlank(type, "参数错误");
@@ -93,7 +93,7 @@ public class ApiLoginController {
     }
 
     @Login
-    @GetMapping("logout")
+    @GetMapping("/logout")
     public R logout(@RequestHeader("token") String token){
         tokenService.cleanToken(token);
         return R.ok();

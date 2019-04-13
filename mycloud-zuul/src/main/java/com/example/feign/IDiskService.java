@@ -1,5 +1,6 @@
 package com.example.feign;
 
+import com.example.vo.DiskDirVo;
 import com.example.vo.FileVo;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,15 @@ public interface IDiskService {
                            @RequestParam("page") Integer page,
                            @RequestParam("limit") Integer limit);
 
+    /**
+     * 获取总页数
+     * @param userId
+     * @param diskId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/listDiskTotal")
+    int listDiskTotal(@RequestParam("userId") String userId,
+                          @RequestParam("diskId") String diskId);
 
     /**
      * 获取企业网盘目录类型
@@ -37,6 +47,6 @@ public interface IDiskService {
      * @return
      */
     @RequestMapping(value = "/front/app/listDiskDirType")
-    List<FileVo> listDiskDirType(@RequestParam("userId") String userId,
-                             @RequestParam("deptId") String deptId);
+    List<DiskDirVo> listDiskDirType(@RequestParam("userId") String userId,
+                                    @RequestParam("deptId") String deptId);
 }

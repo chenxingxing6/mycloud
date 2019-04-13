@@ -31,5 +31,9 @@ public interface IShareService {
                                 @RequestParam("page") Integer page,
                                 @RequestParam("limit") Integer limit);
 
+    @RequestMapping(value = "/front/app/listShareTotal")
+    int listShareTotal(@RequestParam("userId") String userId,
+                                @RequestParam("type") String type);
+
 
 }

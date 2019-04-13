@@ -2,7 +2,9 @@ package com.example.resolver;
 
 import com.example.annotation.LoginUser;
 import com.example.entity.SysUserEntity;
+import com.example.feign.IUserService;
 import com.example.interceptor.AuthorizationInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -16,6 +18,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  */
 @Component
 public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    @Autowired
+    private IUserService userService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -26,12 +30,11 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer container,
                                   NativeWebRequest request, WebDataBinderFactory factory) throws Exception {
         //获取用户ID
-        Object object = request.getAttribute(AuthorizationInterceptor.USER_KEY, RequestAttributes.SCOPE_REQUEST);
-        if(object == null){
+        Object userId = request.getAttribute(AuthorizationInterceptor.USER_KEY, RequestAttributes.SCOPE_REQUEST);
+        if(userId == null){
             return null;
         }
         //获取用户信息
-        SysUserEntity user = null;
-        return user;
+        return userService.getUserByUserId(userId.toString());
     }
 }

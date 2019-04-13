@@ -34,6 +34,14 @@ public interface IUserService {
     SysUserEntity getUserByMobile(@RequestParam("mobile") String mobile);
 
     /**
+     * 查询
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/getUserByUserId")
+    SysUserEntity getUserByUserId(@RequestParam("userId") String userId);
+
+    /**
      * 模糊查询
      * @param username
      * @return
