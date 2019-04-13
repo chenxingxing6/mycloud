@@ -5,6 +5,7 @@ import com.example.annotation.Login;
 import com.example.annotation.LoginUser;
 import com.example.common.utils.R;
 import com.example.common.validator.Assert;
+import com.example.entity.FollowUser;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IFollowService;
 import com.example.service.TokenService;
@@ -42,9 +43,9 @@ public class ApiFollowController {
         Assert.isBlank(type, "参数错误");
         Assert.isNull(user, "用户信息缺失");
         String userId = String.valueOf(user.getUserId());
-        List<SysUserEntity> sysUserEntities = followService.listFollowUser(userId, type);
+        List<FollowUser> followUsers = followService.listFollowUser(userId, type);
         Map<String, Object> map = new HashMap<>();
-        map.put("list", sysUserEntities);
+        map.put("list", followUsers);
         return R.ok().put("data", map);
     }
 

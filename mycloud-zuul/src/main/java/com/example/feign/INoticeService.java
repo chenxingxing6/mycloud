@@ -23,7 +23,9 @@ public interface INoticeService {
      * @return
      */
     @RequestMapping(value = "/front/app/listNotice")
-    List<SysNoticeEntity> listNotice(@RequestParam("type") Integer type);
+    List<SysNoticeEntity> listNotice(@RequestParam("type") Integer type,
+                                     @RequestParam("title") String title,
+                                     @RequestParam("date") String date);
 
 
 }
