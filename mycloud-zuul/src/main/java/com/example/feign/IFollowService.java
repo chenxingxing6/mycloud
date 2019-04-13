@@ -1,5 +1,6 @@
 package com.example.feign;
 
+import com.example.entity.FollowUser;
 import com.example.entity.ShareEntity;
 import com.example.entity.SysUserEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -24,8 +25,8 @@ public interface IFollowService {
      * @return
      */
     @RequestMapping(value = "/front/app/listFollowUser")
-    List<SysUserEntity> listFollowUser(@RequestParam("userId") String userId,
-                                       @RequestParam("type") String type);
+    List<FollowUser> listFollowUser(@RequestParam("userId") String userId,
+                                    @RequestParam("type") String type);
 
 
 }

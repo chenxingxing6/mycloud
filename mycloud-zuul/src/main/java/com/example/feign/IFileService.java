@@ -25,7 +25,8 @@ public interface IFileService {
      */
     @RequestMapping(value = "/front/app/fileRename")
     boolean fileRename(@RequestParam("fileId") String fileId,
-                       @RequestParam("fileName") String fileName);
+                       @RequestParam("fileName") String fileName,
+                       @RequestParam("optUserId") String optUserId);
 
     /**
      * 我的文件列表
@@ -39,4 +40,14 @@ public interface IFileService {
                             @RequestParam("fileParentId") String fileParentId,
                             @RequestParam("page") Integer page,
                             @RequestParam("limit") Integer limit);
+
+    /**
+     * 获取总页数
+     * @param userId
+     * @param fileParentId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/listFileTotal")
+    int listFileTotal(@RequestParam("userId") String userId,
+                      @RequestParam("fileParentId") String fileParentId);
 }
