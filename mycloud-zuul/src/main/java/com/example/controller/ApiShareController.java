@@ -3,6 +3,7 @@ package com.example.controller;
 
 import com.example.annotation.Login;
 import com.example.annotation.LoginUser;
+import com.example.common.utils.DateUtils;
 import com.example.common.utils.R;
 import com.example.common.validator.Assert;
 import com.example.entity.ShareEntity;
@@ -33,11 +34,11 @@ public class ApiShareController {
     @Login
     @RequestMapping("/getShares")
     public R getShares(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
-        String type = MapGet.getByKey("type", params);
+        String type = MapGet.getByKey("searchType", params);
         //当前页
         String page = MapGet.getByKey("page", params);
         //每页大小
-        String limit = MapGet.getByKey("limit", params);
+        String limit = MapGet.getByKey("pageSize", params);
         Assert.isBlank(type, "参数错误");
         Assert.isNull(user, "用户信息缺失");
         List<ShareEntity> shareEntities = shareService.listShare(String.valueOf(user.getUserId()), type, Integer.valueOf(page), Integer.valueOf(limit));
@@ -50,6 +51,20 @@ public class ApiShareController {
 
     private List<ShareVo> cvtVos(List<ShareEntity> shareEntities){
         List<ShareVo> list = new ArrayList<>();
+        for (ShareEntity shareEntity : shareEntities) {
+            ShareVo vo = new ShareVo();
+            vo.setId(shareEntity.getId().toString());
+            vo.setFromUserId(shareEntity.getFromUserId().toString());
+            vo.setFromUserName(shareEntity.getFromUserName());
+            vo.setToUserId(shareEntity.getToUserId().toString());
+            vo.setToUserName(shareEntity.getToUserName());
+            vo.setCreateUser(shareEntity.getCreateUser());
+            vo.setCreateTime(DateUtils.format(shareEntity.getCreateTime(), DateUtils.DATE_TIME_PATTERN));
+            vo.setFileId(shareEntity.getFileId().toString());
+            vo.setFileName(shareEntity.getFileName());
+            vo.setExpiredTime(DateUtils.format(shareEntity.getExpiredTime(), DateUtils.DATE_TIME_PATTERN));
+            list.add(vo);
+        }
         return list;
     }
 }
