@@ -28,6 +28,7 @@ public interface IDiskService {
     @RequestMapping(value = "/front/app/listDisk")
     List<FileEntity> listDisk(@RequestParam("deptId") String deptId,
                               @RequestParam("diskId") String diskId,
+                              @RequestParam("fileName") String fileName,
                               @RequestParam("page") Integer page,
                               @RequestParam("limit") Integer limit);
 
@@ -39,7 +40,8 @@ public interface IDiskService {
      */
     @RequestMapping(value = "/front/app/listDiskTotal")
     int listDiskTotal(@RequestParam("deptId") String deptId,
-                          @RequestParam("diskId") String diskId);
+                      @RequestParam("diskId") String diskId,
+                      @RequestParam("fileName") String fileName);
 
     /**
      * 获取企业网盘目录类型

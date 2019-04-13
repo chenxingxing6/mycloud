@@ -25,7 +25,7 @@ public interface IFollowService {
      * @return
      */
     @RequestMapping(value = "/front/app/listFollowUser")
-    List<FollowUser> listFollowUser(@RequestParam("userId") String userId,
+    List<SysUserEntity> listFollowUser(@RequestParam("userId") String userId,
                                     @RequestParam("type") String type);
 
 

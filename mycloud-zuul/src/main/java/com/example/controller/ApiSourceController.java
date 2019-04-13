@@ -14,6 +14,7 @@ import com.example.utils.MapGet;
 import com.example.vo.DiskDirVo;
 import com.example.vo.FileVo;
 import com.example.vo.SourceVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +45,9 @@ public class ApiSourceController {
     @RequestMapping("/getSource")
     public R getSource(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
         String diskId = MapGet.getByKey("searchType", params);
+        //文件名，模糊查询
+        String fileName = MapGet.getByKey("keyword", params);
+        fileName = StringUtils.isEmpty(fileName) ? "" : fileName;
         //当前页
         String page = MapGet.getByKey("page", params);
         //每页大小
@@ -51,8 +55,8 @@ public class ApiSourceController {
         Assert.isBlank(diskId, "参数错误");
         Assert.isNull(user, "用户信息缺失");
         String deptId = String.valueOf(user.getDeptId());
-        List<FileEntity> fileEntities = diskService.listDisk(deptId, diskId, Integer.valueOf(page), Integer.valueOf(limit));
-        int total = diskService.listDiskTotal(deptId, diskId);
+        List<FileEntity> fileEntities = diskService.listDisk(deptId, diskId, fileName, Integer.valueOf(page), Integer.valueOf(limit));
+        int total = diskService.listDiskTotal(deptId, diskId, fileName);
         Map<String, Object> map = new HashMap<>();
         map.put("list", cvtVos(fileEntities));
         return R.ok().put("data", map).put("page", page).put("total", total);
@@ -79,7 +83,7 @@ public class ApiSourceController {
             String fileName = originalName.substring(0, originalName.lastIndexOf("."));
             vo.setExtension(suffix);
             vo.setName(fileName);
-            vo.setFileUrl(file_url + fileName);
+            vo.setFileUrl(file_url + originalName);
             list.add(vo);
         }
         return list;

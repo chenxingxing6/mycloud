@@ -11,6 +11,7 @@ import com.example.feign.IFollowService;
 import com.example.service.TokenService;
 import com.example.utils.MapGet;
 import com.example.vo.FileVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * 关注用户
@@ -39,13 +42,24 @@ public class ApiFollowController {
     @Login
     @RequestMapping("/getFollowUser")
     public R getFollowUser(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
-        String type = MapGet.getByKey("type", params);
+        String type = MapGet.getByKey("searchType", params);
+        String userName = MapGet.getByKey("keyword", params);
         Assert.isBlank(type, "参数错误");
         Assert.isNull(user, "用户信息缺失");
         String userId = String.valueOf(user.getUserId());
-        List<FollowUser> followUsers = followService.listFollowUser(userId, type);
+        List<SysUserEntity> followUsers = followService.listFollowUser(userId, type);
+        //过滤用户名
+        if (StringUtils.isNotEmpty(userName)){
+            followUsers = followUsers.stream().filter(new Predicate<SysUserEntity>() {
+                @Override
+                public boolean test(SysUserEntity sysUserEntity) {
+                    return userName.equals(sysUserEntity.getUsername());
+                }
+            }).collect(Collectors.toList());
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("list", followUsers);
+        map.put("total", followUsers.size());
         return R.ok().put("data", map);
     }
 
