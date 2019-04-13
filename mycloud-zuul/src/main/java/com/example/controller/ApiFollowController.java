@@ -53,7 +53,7 @@ public class ApiFollowController {
             followUsers = followUsers.stream().filter(new Predicate<SysUserEntity>() {
                 @Override
                 public boolean test(SysUserEntity sysUserEntity) {
-                    return userName.equals(sysUserEntity.getUsername());
+                    return sysUserEntity.getUsername().contains(userName);
                 }
             }).collect(Collectors.toList());
         }

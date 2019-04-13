@@ -9,6 +9,7 @@ import com.example.common.validator.Assert;
 import com.example.entity.FileEntity;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IDiskService;
+import com.example.feign.IFileService;
 import com.example.service.TokenService;
 import com.example.utils.MapGet;
 import com.example.vo.DiskDirVo;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +37,8 @@ import java.util.Map;
 public class ApiSourceController {
     @Autowired
     private IDiskService diskService;
+    @Autowired
+    private IFileService fileService;
     private final String file_url = "http://193.112.27.123:8012/demo/";
 
     /**
@@ -89,10 +95,6 @@ public class ApiSourceController {
         return list;
     }
 
-    public static void main(String[] args) {
-        System.out.println("9Bx98.pptx".substring(0, "9Bx98.pptx".lastIndexOf(".")));
-    }
-
     /**
      * 获取企业网盘资源类型
      * @param user
@@ -108,5 +110,57 @@ public class ApiSourceController {
         map.put("list", diskDirVos);
         return R.ok().put("data", map);
     }
+
+    /**
+     * 用户下载文件,浏览器下载
+     * @param response
+     * @return
+     */
+    @Login
+    @RequestMapping("/fileDownload")
+    public void downloadFile(HttpServletResponse response, @RequestParam Map<String, Object> params) {
+        String fileId = MapGet.getByKey("fileId", params);
+        Assert.isBlank(fileId, "参数错误");
+        //下载到本地
+        String localFilePath = fileService.downloadLocal(fileId);
+        String originalName = localFilePath.substring(localFilePath.lastIndexOf("/") +1);
+        try {
+            //下载的文件携带这个名称
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName="+ new String(originalName.getBytes("GB2312"),"ISO-8859-1"));
+            FileInputStream fis = new FileInputStream(localFilePath);
+            byte[] content = new byte[fis.available()];
+            fis.read(content);
+            fis.close();
+            ServletOutputStream sos = response.getOutputStream();
+            sos.write(content);
+            sos.flush();
+            sos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 获取企业网盘资源类型
+     * @param user
+     * @return
+     */
+    @Login
+    @RequestMapping("/file/rename")
+    public R FileRename(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
+        String fileName = MapGet.getByKey("fileName", params);
+        String fileId = MapGet.getByKey("fileId", params);
+        Assert.isBlank(fileName, "文件名不能为空");
+        Assert.isBlank(fileId, "参数错误");
+        boolean result = fileService.fileRename(fileId, fileName, user.getUserId().toString());
+        if (result){
+            return R.ok();
+        }else {
+            return R.error();
+        }
+    }
+
 
 }

@@ -50,4 +50,14 @@ public interface IFileService {
     @RequestMapping(value = "/front/app/listFileTotal")
     int listFileTotal(@RequestParam("userId") String userId,
                       @RequestParam("fileParentId") String fileParentId);
+
+
+    /**
+     * 下载文件，到本地
+     * @param fileId
+     * @return  originalName
+     */
+    @RequestMapping(value = "/front/app/downloadFile")
+    String downloadLocal(@RequestParam("fileId") String fileId);
+
 }
