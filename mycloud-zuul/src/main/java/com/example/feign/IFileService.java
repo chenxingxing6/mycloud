@@ -7,6 +7,7 @@ import com.example.vo.FileVo;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -61,4 +62,32 @@ public interface IFileService {
     @RequestMapping(value = "/front/app/downloadFile")
     String downloadLocal(@RequestParam("fileId") String fileId);
 
+    /**
+     * 删除文件
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/delFileById")
+    void delFileById(@RequestParam("userId") String userId,
+                       @RequestParam("fileId") String fileId);
+
+
+    /**
+     * 添加到企业网盘
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/addDisk")
+    void addDisk(@RequestParam("userId") String userId,
+                       @RequestParam("fileId") String fileId);
+
+
+    /**
+     * 更新头像
+     * @param userId
+     * @param file
+     * @return
+     */
+    String updateImg(@RequestParam("userId") String userId,
+                     @RequestParam("file") MultipartFile file);
 }

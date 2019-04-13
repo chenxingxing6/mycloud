@@ -10,16 +10,15 @@ import com.example.entity.ShareEntity;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IShareService;
 import com.example.utils.MapGet;
+import com.example.utils.RedisUtil;
 import com.example.vo.ShareVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 分享Controller
@@ -29,6 +28,8 @@ import java.util.Map;
 public class ApiShareController {
     @Autowired
     private IShareService shareService;
+    @Autowired
+    private RedisUtil redisUtil;
 
 
     @Login
@@ -67,5 +68,62 @@ public class ApiShareController {
             list.add(vo);
         }
         return list;
+    }
+
+    @Login
+    @RequestMapping("/toShare")
+    public R toShare(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
+        String toUserId = MapGet.getByKey("userId", params);
+        String fileId = MapGet.getByKey("fileId", params);
+        Assert.isNull(user, "用户信息缺失");
+        Assert.isBlank(toUserId, "分享用户不能为空");
+        shareService.toShare(user.getUserId().toString(), toUserId, fileId);
+        return R.ok();
+    }
+
+
+    /**
+     * 创建链接
+     * @param user
+     * @param params
+     * @return
+     */
+    @Login
+    @RequestMapping("/createLink")
+    public R createLink(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
+        String fileId = MapGet.getByKey("fileId", params);
+        Assert.isNull(user, "用户信息缺失");
+        String code = getCode(user.getUserId().toString());
+        Map<String, Object> map = new HashMap<>();
+        map.put("fromUserId", user.getUserId().toString());
+        map.put("fileId", user.getUserId().toString());
+        redisUtil.setObject(code, map, 60*60*24);
+        return R.ok().put("data", "/api/readLink/"+ code);
+    }
+
+    private String getCode(String userId) {
+        return UUID.randomUUID().toString().replace("-", "") + userId;
+    }
+
+    /**
+     * 读取链接
+     * @param user
+     * @param code
+     * @return
+     */
+    @Login
+    @RequestMapping("/readLink/{code}")
+    public R readLink(@LoginUser SysUserEntity user, @PathVariable String code){
+        Assert.isNull(user, "用户信息缺失");
+        Assert.isBlank(code, "链接无效");
+        Object object = redisUtil.get(code);
+        if (object == null){
+            return R.ok("链接失效!");
+        }
+        Map<String, Object> map = (Map) object;
+        String fromUserId = map.get("fromUserId").toString();
+        String fileId = map.get("fileId").toString();
+        shareService.toShare(fromUserId, user.getUserId().toString(), fileId);
+        return R.ok();
     }
 }

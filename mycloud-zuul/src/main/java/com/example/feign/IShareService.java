@@ -36,4 +36,17 @@ public interface IShareService {
                                 @RequestParam("type") String type);
 
 
+    /**
+     * 分享给用户
+     * @param fromUserId
+     * @param toUserId
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/toShare")
+    int toShare(@RequestParam("fromUserId") String fromUserId,
+                @RequestParam("toUserId") String toUserId,
+                @RequestParam("fileId") String fileId);
+
+
 }

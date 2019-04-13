@@ -48,4 +48,13 @@ public interface IUserService {
      */
     @RequestMapping(value = "/front/app/findUser")
     List<SysUserEntity> findUserByUserName(@RequestParam("username") String username);
+
+
+    /**
+     * 删除文件
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "/front/app/updateUser")
+    void updateUser(@RequestParam("user") SysUserEntity user);
 }
