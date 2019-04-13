@@ -45,7 +45,8 @@ public class ApiShareController {
         int total = shareService.listShareTotal(String.valueOf(user.getUserId()), type);
         Map<String, Object> map = new HashMap<>();
         map.put("list", cvtVos(shareEntities));
-        return R.ok().put("data", map).put("page", page).put("total", total);
+        map.put("total", total);
+        return R.ok().put("data", map).put("page", page);
     }
 
 
