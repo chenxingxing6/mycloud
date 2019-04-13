@@ -1,5 +1,6 @@
 package com.example.feign;
 
+import com.example.entity.FileEntity;
 import com.example.vo.DiskDirVo;
 import com.example.vo.FileVo;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -19,25 +20,25 @@ public interface IDiskService {
 
     /**
      * 获取企业网盘资源
-     * @param userId
+     * @param deptId
      * @param page
      * @param limit
      * @return
      */
     @RequestMapping(value = "/front/app/listDisk")
-    List<FileVo> listDisk(@RequestParam("userId") String userId,
-                          @RequestParam("diskId") String diskId,
-                           @RequestParam("page") Integer page,
-                           @RequestParam("limit") Integer limit);
+    List<FileEntity> listDisk(@RequestParam("deptId") String deptId,
+                              @RequestParam("diskId") String diskId,
+                              @RequestParam("page") Integer page,
+                              @RequestParam("limit") Integer limit);
 
     /**
      * 获取总页数
-     * @param userId
+     * @param deptId
      * @param diskId
      * @return
      */
     @RequestMapping(value = "/front/app/listDiskTotal")
-    int listDiskTotal(@RequestParam("userId") String userId,
+    int listDiskTotal(@RequestParam("deptId") String deptId,
                           @RequestParam("diskId") String diskId);
 
     /**
