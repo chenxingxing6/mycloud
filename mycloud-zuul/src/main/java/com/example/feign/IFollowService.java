@@ -29,4 +29,16 @@ public interface IFollowService {
                                     @RequestParam("type") String type);
 
 
+
+    /**
+     * 关注或取消关注
+     * @param fromUserId
+     * @param toUserId
+     * @param type   0: 关注  1:取消关注
+     * @return
+     */
+    @RequestMapping(value = "/front/app/addOrCancleUser")
+    void addOrCancleUser(@RequestParam("fromUserId") String fromUserId,
+                 @RequestParam("toUserId") String toUserId,
+                 @RequestParam("type") String type);
 }

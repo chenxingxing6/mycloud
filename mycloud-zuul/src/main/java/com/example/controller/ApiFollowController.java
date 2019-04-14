@@ -8,6 +8,7 @@ import com.example.common.validator.Assert;
 import com.example.entity.FollowUser;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IFollowService;
+import com.example.feign.IUserService;
 import com.example.service.TokenService;
 import com.example.utils.MapGet;
 import com.example.vo.FileVo;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
 public class ApiFollowController {
     @Autowired
     private IFollowService followService;
+    @Autowired
+    private IUserService userService;
 
 
     /**
@@ -57,10 +60,48 @@ public class ApiFollowController {
                 }
             }).collect(Collectors.toList());
         }
+        for (SysUserEntity followUser : followUsers) {
+            followUser.setType(Integer.valueOf(type));
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("list", followUsers);
         map.put("total", followUsers.size());
         return R.ok().put("data", map);
     }
 
+
+    /**
+     * 获取用户详情
+     * @param params
+     * @return
+     */
+    @Login
+    @RequestMapping("/getUserDetail")
+    public R getUserDetail(@RequestParam Map<String, Object> params){
+        String userId = MapGet.getByKey("userId", params);
+        Assert.isBlank(userId, "参数错误");
+        SysUserEntity user = userService.getUserByUserId(userId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("member", user);
+        return R.ok().put("data", map);
+    }
+
+
+    /**
+     * 关注或取消关注
+     * @param params
+     * @return
+     */
+    @Login
+    @RequestMapping("/addOrCancleUser")
+    public R addOrCancleUser(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
+        Assert.isNull(user, "参数错误");
+        String type = MapGet.getByKey("type", params);
+        String toUserId = MapGet.getByKey("userId", params);
+        String fromUserId = user.getUserId().toString();
+        Assert.isBlank(toUserId, "参数错误");
+        Assert.isBlank(type, "参数错误");
+        followService.addOrCancleUser(fromUserId, toUserId, type);
+        return R.ok();
+    }
 }
