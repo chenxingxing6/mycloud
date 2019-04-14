@@ -3,6 +3,7 @@ package com.example.controller;
 
 import com.example.annotation.Login;
 import com.example.annotation.LoginUser;
+import com.example.common.utils.DateUtils;
 import com.example.common.utils.R;
 import com.example.common.validator.Assert;
 import com.example.entity.FileEntity;
@@ -10,7 +11,9 @@ import com.example.entity.SysUserEntity;
 import com.example.feign.IFileService;
 import com.example.feign.IUploadService;
 import com.example.feign.IUserService;
+import com.example.service.TokenService;
 import com.example.utils.MapGet;
+import com.example.vo.UserVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,8 @@ public class ApiUserController {
     private IUserService userService;
     @Autowired
     private IUploadService uploadService;
+    @Autowired
+    private TokenService tokenService;
 
     /**
      * 获取我的网盘
@@ -116,6 +121,64 @@ public class ApiUserController {
         return R.ok();
     }
 
+    //修改绑定信息
+    @Login
+    @RequestMapping("/bindUpdate")
+    public R bindUpdate(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
+        String type = MapGet.getByKey("type", params);
+        if (StringUtils.isEmpty(type)){
+            return R.ok();
+        }
+        SysUserEntity userEntity = userService.getUserByUserId(user.getUserId().toString());
+        if (userEntity == null){
+            return R.ok();
+        }
+        //密码
+        if ("1".equals(type)){
+            String newPassword = MapGet.getByKey("newPassword", params);
+            String password = MapGet.getByKey("password", params);
+            SysUserEntity entity = userService.getUserByAccount(user.getUsername(), password);
+            if (entity == null){
+                return R.error("原密码输入错误");
+            }
+            userEntity.setPassword(newPassword);
+        }
+        //手机号
+        else if ("2".equals(type)){
+            String mobile = MapGet.getByKey("mobile", params);
+            String captcha = MapGet.getByKey("captcha", params);
+            SysUserEntity userEntity1 = userService.getUserByMobile(mobile);
+            if (userEntity1 !=null){
+                return R.error("手机号已存在");
+            }
+            if (!tokenService.checkCaptcha(mobile, captcha)){
+                return R.error("验证码输入错误");
+            }
+            userEntity.setMobile(mobile);
+        }
+        //邮箱
+        else if ("3".equals(type)){
+            String email = MapGet.getByKey("mail", params);
+            userEntity.setEmail(email);
+        }
+        userService.updateUser(userEntity);
+
+        //用户登录
+        Map<String, Object> map = new HashMap<>();
+        UserVo userVo = new UserVo();
+        userVo.setId(userEntity.getUserId().toString());
+        userVo.setUsername(userEntity.getUsername());
+        userVo.setEmail(userEntity.getEmail());
+        userVo.setImgPath(userEntity.getImgPath());
+        //userVo.setPassword(userEntity.getPassword());
+        userVo.setMobile(userEntity.getMobile());
+        userVo.setCreateTime(DateUtils.format(userEntity.getCreateTime(), DateUtils.DATE_TIME_PATTERN));
+        userVo.setDeptId(userEntity.getDeptId().toString());
+        userVo.setDeptName(userEntity.getDeptName());
+        userVo.setCompanyName("杭州二维火科技有限公司");
+        map.put("member", userVo);
+        return R.ok().put("data", map);
+    }
 
     //查询可以分享的用户
     @Login
