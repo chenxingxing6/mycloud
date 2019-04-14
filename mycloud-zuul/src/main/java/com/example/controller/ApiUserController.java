@@ -6,6 +6,7 @@ import com.example.annotation.LoginUser;
 import com.example.common.utils.DateUtils;
 import com.example.common.utils.R;
 import com.example.common.validator.Assert;
+import com.example.entity.DiskFileEntity;
 import com.example.entity.FileEntity;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IFileService;
@@ -13,16 +14,21 @@ import com.example.feign.IUploadService;
 import com.example.feign.IUserService;
 import com.example.service.TokenService;
 import com.example.utils.MapGet;
+import com.example.vo.SourceVo;
 import com.example.vo.UserVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * 用户Controller
@@ -38,6 +44,11 @@ public class ApiUserController {
     private IUploadService uploadService;
     @Autowired
     private TokenService tokenService;
+
+
+    //文件完整路径
+    @Value("${file.seeUrl}")
+    String fileSeeUrl;
 
     /**
      * 获取我的网盘
@@ -58,17 +69,41 @@ public class ApiUserController {
         List<FileEntity> fileEntities = fileService.listFileByPage(user.getUserId().toString(), fileParentId, Integer.valueOf(page), Integer.valueOf(limit));
         int total = fileService.listFileTotal(user.getUserId().toString(), fileParentId);
         Map<String, Object> map = new HashMap<>();
-        map.put("list", fileEntities);
+        map.put("list", cvtVos(fileEntities));
         return R.ok().put("data", map).put("page", page).put("total", total);
     }
 
-  /*  @RequestMapping("/updateImg")
-    //文件上传
-    public R updateImg(@RequestPart(value = "avatar") MultipartFile avatar){
-        String ossUrl = uploadService.updateImg(avatar);
-        return R.ok().put("data", ossUrl);
+
+    private List<SourceVo> cvtVos(List<FileEntity> fileEntities){
+        List<SourceVo> list = new ArrayList<>();
+        for (FileEntity file : fileEntities) {
+            SourceVo vo = new SourceVo();
+            vo.setId(file.getId().toString());
+            vo.setParentId(String.valueOf(file.getParentId()));
+            vo.setCreateUser(file.getCreateUser());
+            vo.setCreateTime(DateUtils.format(file.getCreateTime(), DateUtils.DATE_TIME_PATTERN));
+            vo.setOptTime(DateUtils.format(file.getOpTime(), DateUtils.DATE_TIME_PATTERN));
+            vo.setDownloads(String.valueOf(file.getDownloadNum()));
+            vo.setLength(file.getLength());
+            vo.setOriginalName(file.getOriginalName());
+            vo.setOriginalPath(file.getOriginalPath());
+            vo.setViewFlag(String.valueOf(file.getViewFlag()));
+            vo.setType(String.valueOf(file.getType())); //0：目录  1：文件
+            String originalName = file.getOriginalName();
+            if ("1".equals(file.getType().toString())){
+                String suffix = originalName.substring(originalName.lastIndexOf(".") + 1);
+                String fileName = originalName.substring(0, originalName.lastIndexOf("."));
+                vo.setExtension(suffix);
+                vo.setName(fileName);
+            }else {
+                vo.setName(originalName);
+            }
+            vo.setFileUrl(fileSeeUrl + originalName);
+            list.add(vo);
+        }
+        return list;
     }
-*/
+
     //文件加入企业网盘
     @Login
     @RequestMapping("/addDisk")
@@ -76,6 +111,11 @@ public class ApiUserController {
         String fileId = MapGet.getByKey("fileId", params);
         Assert.isNull(user, "用户信息缺失");
         Assert.isBlank(fileId, "文件Id不能为空");
+        //判断是否存在
+        DiskFileEntity entity = fileService.getDiskFileByFileId(fileId);
+        if (entity !=null){
+            return R.error("企业网盘里面已经有该文件了");
+        }
         fileService.addDisk(user.getUserId().toString(), fileId);
         return R.ok();
     }
@@ -187,6 +227,12 @@ public class ApiUserController {
         String userName = MapGet.getByKey("userName", params);
         Assert.isNull(user, "用户信息缺失");
         List<SysUserEntity> userEntities = userService.findUserByUserName(userName);
+        userEntities = userEntities.stream().filter(new Predicate<SysUserEntity>() {
+            @Override
+            public boolean test(SysUserEntity sysUserEntity) {
+                return !sysUserEntity.getUserId().equals(user.getUserId());
+            }
+        }).collect(Collectors.toList());
         Map<String, Object> map = new HashMap<>();
         map.put("list", userEntities);
         return R.ok().put("data", map);

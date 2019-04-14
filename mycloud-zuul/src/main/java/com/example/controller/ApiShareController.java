@@ -98,7 +98,7 @@ public class ApiShareController {
         map.put("fromUserId", user.getUserId().toString());
         map.put("fileId", user.getUserId().toString());
         redisUtil.setObject(code, map, 60*60*24);
-        return R.ok().put("data", "/api/readLink/"+ code);
+        return R.ok().put("data", code);
     }
 
     private String getCode(String userId) {

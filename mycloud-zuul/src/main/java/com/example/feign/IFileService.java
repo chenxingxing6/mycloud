@@ -1,5 +1,6 @@
 package com.example.feign;
 
+import com.example.entity.DiskFileEntity;
 import com.example.entity.FileEntity;
 import com.example.entity.ShareEntity;
 import com.example.entity.SysUserEntity;
@@ -80,5 +81,13 @@ public interface IFileService {
     @RequestMapping(value = "/front/app/addDisk")
     void addDisk(@RequestParam("userId") String userId,
                        @RequestParam("fileId") String fileId);
+
+
+    /**
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/getDiskFileByFileId")
+    DiskFileEntity getDiskFileByFileId(@RequestParam("fileId") String fileId);
 
 }
