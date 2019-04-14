@@ -1,10 +1,10 @@
 package com.example.feign;
 
-import com.example.common.utils.R;
 import com.example.entity.SysUserEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -51,10 +51,10 @@ public interface IUserService {
 
 
     /**
-     * 删除文件
+     * 更新用户
      * @param user
      * @return
      */
-    @RequestMapping(value = "/front/app/updateUser")
-    void updateUser(@RequestParam("user") SysUserEntity user);
+    @RequestMapping(value = "/front/app/updateUser", method = RequestMethod.POST)
+    void updateUser(@RequestBody SysUserEntity user);
 }

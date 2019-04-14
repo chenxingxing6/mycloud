@@ -1,7 +1,7 @@
 ##Mysql数据库配置
 datasource:
   master:
-    url: jdbc:mysql://60.205.212.196:3306/cloud-ida?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://60.205.212.196:3306/cloud_disk?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
     driverClassName: com.mysql.jdbc.Driver
-    username: root
+    username: disk
     password: 123456

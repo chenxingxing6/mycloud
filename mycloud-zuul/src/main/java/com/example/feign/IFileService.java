@@ -81,13 +81,4 @@ public interface IFileService {
     void addDisk(@RequestParam("userId") String userId,
                        @RequestParam("fileId") String fileId);
 
-
-    /**
-     * 更新头像
-     * @param userId
-     * @param file
-     * @return
-     */
-    String updateImg(@RequestParam("userId") String userId,
-                     @RequestParam("file") MultipartFile file);
 }

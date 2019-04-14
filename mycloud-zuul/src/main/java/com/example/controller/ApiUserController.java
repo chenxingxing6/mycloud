@@ -8,8 +8,10 @@ import com.example.common.validator.Assert;
 import com.example.entity.FileEntity;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IFileService;
+import com.example.feign.IUploadService;
 import com.example.feign.IUserService;
 import com.example.utils.MapGet;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,8 @@ public class ApiUserController {
     private IFileService fileService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IUploadService uploadService;
 
     /**
      * 获取我的网盘
@@ -53,14 +57,13 @@ public class ApiUserController {
         return R.ok().put("data", map).put("page", page).put("total", total);
     }
 
-    @Login
-    @RequestMapping("/updateImg")
+  /*  @RequestMapping("/updateImg")
     //文件上传
-    public R updateImg(@LoginUser SysUserEntity user,@RequestParam("file") MultipartFile file){
-        String ossUrl = fileService.updateImg(user.getUserId().toString(), file);
+    public R updateImg(@RequestPart(value = "avatar") MultipartFile avatar){
+        String ossUrl = uploadService.updateImg(avatar);
         return R.ok().put("data", ossUrl);
     }
-
+*/
     //文件加入企业网盘
     @Login
     @RequestMapping("/addDisk")
@@ -90,12 +93,24 @@ public class ApiUserController {
     @RequestMapping("/updateUserInfo")
     public R updateUserInfo(@LoginUser SysUserEntity user, @RequestParam Map<String, Object> params){
         String email = MapGet.getByKey("email", params);
-        String userName = MapGet.getByKey("userName", params);
-        if (StringUtils.isNotEmpty(email)){
+        String userName = MapGet.getByKey("name", params);
+        String avatar = MapGet.getByKey("avatar", params);
+        SysUserEntity userEntity = userService.getUserByUserId(user.getUserId().toString());
+        if (userEntity == null){
+            return R.ok();
+        }
+        if (StringUtils.isNotEmpty(email) && !email.equals(userEntity.getEmail())){
             user.setEmail(email);
         }
-        if (StringUtils.isNotEmpty(userName)){
+        if (StringUtils.isNotEmpty(userName) && !userName.equals(userEntity.getUsername())){
             user.setUsername(userName);
+            SysUserEntity entity = userService.getUserByAccount(userName, null);
+            if (entity !=null){
+                return R.error("该用户名存在");
+            }
+        }
+        if (StringUtils.isNotEmpty(avatar)){
+            user.setImgPath(avatar);
         }
         userService.updateUser(user);
         return R.ok();
