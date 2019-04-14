@@ -126,4 +126,18 @@ public class ApiShareController {
         shareService.toShare(fromUserId, user.getUserId().toString(), fileId);
         return R.ok();
     }
+
+    /**
+     * 删除
+     * @param params
+     * @return
+     */
+    @Login
+    @RequestMapping("/delByShareId")
+    public R delByShareId(@RequestParam Map<String, Object> params){
+        String shareId = MapGet.getByKey("shareId", params);
+        Assert.isBlank(shareId, "参数错误");
+        shareService.delByShareId(shareId);
+        return R.ok();
+    }
 }

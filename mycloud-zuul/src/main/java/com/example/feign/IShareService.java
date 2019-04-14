@@ -49,4 +49,13 @@ public interface IShareService {
                 @RequestParam("fileId") String fileId);
 
 
+    /**
+     * 删除分享
+     * @param shareId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/delByShareId")
+    void delByShareId(@RequestParam("shareId") String shareId);
+
+
 }

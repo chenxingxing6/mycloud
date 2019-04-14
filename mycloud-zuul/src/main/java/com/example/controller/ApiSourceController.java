@@ -125,7 +125,11 @@ public class ApiSourceController {
         String fileId = MapGet.getByKey("fileId", params);
         Assert.isBlank(fileId, "参数错误");
         //下载到本地
-        String localFilePath = fileService.downloadLocal(fileId).replace("\"", "");
+        String localFilePath = fileService.downloadLocal(fileId);
+        if (StringUtils.isEmpty(localFilePath)){
+            return;
+        }
+        localFilePath = localFilePath.replace("\"", "");
         String originalName = localFilePath.substring(localFilePath.lastIndexOf("/") +1);
         try {
             //下载的文件携带这个名称
