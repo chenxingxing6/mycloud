@@ -5,3 +5,7 @@ datasource:
     driverClassName: com.mysql.jdbc.Driver
     username: root
     password: 123456
+
+
+file:
+  seeUrl: http://193.112.27.123:8012/disk/

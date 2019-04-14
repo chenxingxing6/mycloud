@@ -17,6 +17,7 @@ import com.example.vo.FileVo;
 import com.example.vo.SourceVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,10 @@ public class ApiSourceController {
     private IDiskService diskService;
     @Autowired
     private IFileService fileService;
-    private final String file_url = "http://193.112.27.123:8012/demo/";
+
+    //文件完整路径
+    @Value("${file.seeUrl}")
+    String fileSeeUrl;
 
     /**
      * 获取企业网盘资源
@@ -89,7 +93,7 @@ public class ApiSourceController {
             String fileName = originalName.substring(0, originalName.lastIndexOf("."));
             vo.setExtension(suffix);
             vo.setName(fileName);
-            vo.setFileUrl(file_url + originalName);
+            vo.setFileUrl(fileSeeUrl + originalName);
             list.add(vo);
         }
         return list;
@@ -116,13 +120,12 @@ public class ApiSourceController {
      * @param response
      * @return
      */
-    @Login
     @RequestMapping("/fileDownload")
     public void downloadFile(HttpServletResponse response, @RequestParam Map<String, Object> params) {
         String fileId = MapGet.getByKey("fileId", params);
         Assert.isBlank(fileId, "参数错误");
         //下载到本地
-        String localFilePath = fileService.downloadLocal(fileId);
+        String localFilePath = fileService.downloadLocal(fileId).replace("\"", "");
         String originalName = localFilePath.substring(localFilePath.lastIndexOf("/") +1);
         try {
             //下载的文件携带这个名称
