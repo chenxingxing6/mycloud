@@ -90,4 +90,12 @@ public interface IFileService {
     @RequestMapping(value = "/front/app/getDiskFileByFileId")
     DiskFileEntity getDiskFileByFileId(@RequestParam("fileId") String fileId);
 
+
+    /**
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/getFileByFileId")
+    FileEntity getFileByFileId(@RequestParam("fileId") String fileId);
+
 }
