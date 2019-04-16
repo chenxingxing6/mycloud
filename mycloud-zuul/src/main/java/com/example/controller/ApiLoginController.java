@@ -34,7 +34,6 @@ public class ApiLoginController {
      * @param params
      * @return
      */
-    @Login
     @RequestMapping("/getCaptcha")
     public R getTest(@RequestParam Map<String, Object> params){
         String mobile = MapGet.getByKey("mobile", params);
