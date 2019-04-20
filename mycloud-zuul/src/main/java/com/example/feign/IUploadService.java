@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Date: 2019/4/14 10:54
  * Desc: 上传文件服务
  */
-@FeignClient(value = "service", configuration = IUploadService.FeignConfig.class)
+@FeignClient(value = "service", configuration = IUploadService.FeignConfig.class, url = "http://193.112.27.123:9000/")
 public interface IUploadService {
     /**
      * 更新头像

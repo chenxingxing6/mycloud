@@ -14,7 +14,7 @@ import java.util.List;
  * Desc: 分享
  */
 
-@FeignClient(name = "service")
+@FeignClient(name = "service", url = "http://193.112.27.123:9000/")
 public interface IShareService {
 
     /**

@@ -10,7 +10,7 @@
 
 	<groupId>com.example</groupId>
 	<artifactId>mycloud-zuul</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>mycloud-zuul</name>
 	<packaging>war</packaging>
 	<description>Demo project for Spring Boot</description>
@@ -24,7 +24,7 @@
 		<dependency>
 			<artifactId>mycloud-common</artifactId>
 			<groupId>com.example</groupId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!--<dependency>
