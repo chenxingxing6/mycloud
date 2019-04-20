@@ -12,7 +12,7 @@
 	<artifactId>mycloud-zuul</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>mycloud-zuul</name>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -27,11 +27,11 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>com.example</groupId>
 			<artifactId>mycloud-admin</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
