@@ -15,7 +15,7 @@ import java.util.List;
  * Desc: 关注
  */
 
-@FeignClient(name = "service")
+@FeignClient(name = "service", url = "http://localhost:9000")
 public interface IFollowService {
 
     /**

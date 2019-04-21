@@ -14,7 +14,7 @@ import java.util.List;
  * Desc: 通知
  */
 
-@FeignClient(name = "service")
+@FeignClient(name = "service", url = "http://localhost:9000")
 public interface INoticeService {
 
     /**
