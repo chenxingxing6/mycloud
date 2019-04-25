@@ -10,17 +10,21 @@ import com.example.common.validator.Assert;
 import com.example.entity.SysUserEntity;
 import com.example.feign.IUserService;
 import com.example.oauth.OauthQQ;
+import com.example.oauth.OauthSina;
 import com.example.service.TokenService;
 import com.example.utils.MapGet;
 import com.example.utils.TokenUtil;
 import com.example.vo.UserVo;
+import com.example.websocket.WebSocketServer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +41,34 @@ public class ApiLoginController {
     @Autowired
     private IUserService userService;
 
+    //推送数据接口
+    @RequestMapping("/socket/push")
+    public R pushToWeb(String mobile) {
+        try {
+            SysUserEntity userEntity = userService.getUserByMobile(mobile);
+            //生成token
+            String token = tokenService.createToken(userEntity.getUserId());
+            //用户登录
+            Map<String, Object> map = new HashMap<>();
+            UserVo userVo = new UserVo();
+            userVo.setId(userEntity.getUserId().toString());
+            userVo.setUsername(userEntity.getUsername());
+            userVo.setEmail(userEntity.getEmail());
+            userVo.setImgPath(userEntity.getImgPath());
+            userVo.setMobile(userEntity.getMobile());
+            userVo.setCreateTime(DateUtils.format(userEntity.getCreateTime(), DateUtils.DATE_TIME_PATTERN));
+            userVo.setDeptId(userEntity.getDeptId().toString());
+            userVo.setDeptName(userEntity.getDeptName());
+            userVo.setCompanyName("杭州二维火科技有限公司");
+            map.put("member", userVo);
+            R r =  R.ok("login").put("data", map).put("token", token);
+            WebSocketServer.sendUserInfo(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error(e.getMessage());
+        }
+        return R.ok();
+    }
 
     /**
      * QQ扫码登录 构造授权请求url
@@ -44,7 +76,7 @@ public class ApiLoginController {
      * @throws
      */
     @RequestMapping("/qq/login")
-    public R index(HttpServletRequest request){
+    public R qqLogin(HttpServletRequest request){
         //state就是一个随机数，保证安全
         String state = TokenUtil.randomState();
         try {
@@ -56,13 +88,32 @@ public class ApiLoginController {
         return R.error();
     }
 
+
+    /**
+     * 微博登录 构造授权请求url
+     * @return void    返回类型
+     * @throws
+     */
+    @RequestMapping("/sina/login")
+    public R sinaLogin(HttpServletRequest request){
+        //state就是一个随机数，保证安全
+        String state = TokenUtil.randomState();
+        try {
+            String url = OauthSina.me().getAuthorizeUrl(state);
+            return R.ok().put("url", url);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return R.error();
+    }
+
     @RequestMapping("/qq/callback")
-    public R callback(HttpServletRequest request){
+    public void callback(HttpServletRequest request){
         String code = request.getParameter("code");
         String state = request.getParameter("state");
         // 取消了授权
         if (StringUtils.isBlank(state)||StringUtils.isBlank(code)){
-            return R.ok("取消了授权");
+            logger.info("取消了授权");
         }
         //清除state以防下次登录授权失败
         //session.removeAttribute(SESSION_STATE);
@@ -75,12 +126,37 @@ public class ApiLoginController {
             String nickname = userInfo.getString("nickname");
             String photoUrl = userInfo.getString("figureurl_2");
             // 将相关信息存储数据库...
-            return R.ok().put("user", userInfo.toString());
+            innerSendMsg(openid, nickname, photoUrl);
+
         }catch(Exception e){
             e.printStackTrace();
         }
-        //这里你们可以自己修改，授权成功后，调到首页
-        return R.error();
+    }
+
+    private void innerSendMsg(String openId, String nickName, String photoUrl){
+        SysUserEntity userEntity = userService.getUserByOpenId(openId);
+        if (userEntity == null){
+            R r =  R.error("用户没和QQ进行关联");
+            WebSocketServer.sendUserInfo(r);
+            return;
+        }
+        //生成token
+        String token = tokenService.createToken(userEntity.getUserId());
+        //用户登录
+        Map<String, Object> map = new HashMap<>();
+        UserVo userVo = new UserVo();
+        userVo.setId(userEntity.getUserId().toString());
+        userVo.setUsername(nickName);
+        userVo.setEmail(userEntity.getEmail());
+        userVo.setImgPath(photoUrl);
+        userVo.setMobile(userEntity.getMobile());
+        userVo.setCreateTime(DateUtils.format(userEntity.getCreateTime(), DateUtils.DATE_TIME_PATTERN));
+        userVo.setDeptId(userEntity.getDeptId().toString());
+        userVo.setDeptName(userEntity.getDeptName());
+        userVo.setCompanyName("杭州二维火科技有限公司");
+        map.put("member", userVo);
+        R r =  R.ok("login").put("data", map).put("token", token);
+        WebSocketServer.sendUserInfo(r);
     }
 
 
