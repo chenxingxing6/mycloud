@@ -10,9 +10,9 @@
 
 	<groupId>com.example</groupId>
 	<artifactId>mycloud-zuul</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>mycloud-zuul</name>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
