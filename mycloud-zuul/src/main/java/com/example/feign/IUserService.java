@@ -35,6 +35,14 @@ public interface IUserService {
 
     /**
      * 查询
+     * @param openId
+     * @return
+     */
+    @RequestMapping(value = "/front/app/getUserByOpenId")
+    SysUserEntity getUserByOpenId(@RequestParam("openId") String openId);
+
+    /**
+     * 查询
      * @param userId
      * @return
      */
