@@ -3,6 +3,7 @@ package com.example.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.annotation.Login;
+import com.example.annotation.LoginUser;
 import com.example.common.exception.BizException;
 import com.example.common.utils.DateUtils;
 import com.example.common.utils.R;
@@ -40,6 +41,8 @@ public class ApiLoginController {
     private TokenService tokenService;
     @Autowired
     private IUserService userService;
+
+    private static final String PRE_FIX = "CONNQQ-";
 
     //推送数据接口
     @RequestMapping("/socket/push")
@@ -88,6 +91,26 @@ public class ApiLoginController {
         return R.error();
     }
 
+    /**
+     * QQ扫码关联
+     * @return void    返回类型
+     * @throws
+     */
+    @Login
+    @RequestMapping("/qq/conn")
+    public R qqConn(@LoginUser SysUserEntity user, HttpServletRequest request){
+        Assert.isNull(user.getUserId(), "参数错误");
+        //state就是一个随机数，保证安全,这里用用户ID
+        String state = TokenUtil.randomState();
+        try {
+            String url = OauthQQ.me().getAuthorizeUrl(PRE_FIX + user.getUserId());
+            return R.ok().put("url", url);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return R.error();
+    }
+
 
     /**
      * 微博登录 构造授权请求url
@@ -111,6 +134,7 @@ public class ApiLoginController {
     public void callback(HttpServletRequest request){
         String code = request.getParameter("code");
         String state = request.getParameter("state");
+        boolean isQQConn = state.startsWith(PRE_FIX);
         // 取消了授权
         if (StringUtils.isBlank(state)||StringUtils.isBlank(code)){
             logger.info("取消了授权");
@@ -126,18 +150,29 @@ public class ApiLoginController {
             String nickname = userInfo.getString("nickname");
             String photoUrl = userInfo.getString("figureurl_2");
             // 将相关信息存储数据库...
-            innerSendMsg(openid, nickname, photoUrl);
+            innerSendMsg(openid, nickname, photoUrl, isQQConn, state);
 
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    private void innerSendMsg(String openId, String nickName, String photoUrl){
+    private void innerSendMsg(String openId, String nickName, String photoUrl, boolean isQQConn, String state){
         SysUserEntity userEntity = userService.getUserByOpenId(openId);
         if (userEntity == null){
-            R r =  R.error("用户没和QQ进行关联");
-            WebSocketServer.sendUserInfo(r);
+            if (isQQConn){
+                String userId = state.split("-")[1];
+                SysUserEntity user = userService.getUserByUserId(userId);
+                if (user != null){
+                    user.setOpenId(openId);
+                    user.setImgPath(photoUrl);
+                    userService.updateUser(user);
+                    logger.warn("QQ关联成功！ userId:{}", userId);
+                }
+            }else {
+                R r = R.error("用户没和QQ进行关联");
+                WebSocketServer.sendUserInfo(r);
+            }
             return;
         }
         //生成token
@@ -170,6 +205,25 @@ public class ApiLoginController {
         String mobile = MapGet.getByKey("mobile", params);
         Assert.isBlank(mobile, "参数错误");
         return R.ok().put("data", tokenService.createCaptcha(mobile));
+    }
+
+    /**
+     * 忘记密码
+     * @param params
+     * @return
+     */
+    @RequestMapping("/forget")
+    public R forgetPassWord(@RequestParam Map<String, Object> params){
+        String captcha = MapGet.getByKey("captcha", params);
+        String mobile = MapGet.getByKey("mobile", params);
+        if (!tokenService.checkCaptcha(mobile, captcha)){
+            throw new BizException("验证码错误请重试！");
+        }
+        SysUserEntity userEntity = userService.getUserByMobile(mobile);
+        if (userEntity == null){
+            return R.error("手机号有误，请重新输入");
+        }
+        return R.ok("你的密码是：" + userEntity.getPassword());
     }
 
     /**

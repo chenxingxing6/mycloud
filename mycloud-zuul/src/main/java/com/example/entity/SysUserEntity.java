@@ -43,8 +43,6 @@ public class SysUserEntity implements Serializable {
 	/**
 	 * 密码
 	 */
-	@NotBlank(message="密码不能为空", groups = AddGroup.class)
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
 	/**
@@ -63,6 +61,12 @@ public class SysUserEntity implements Serializable {
 	 * 手机号
 	 */
 	private String mobile;
+
+	/**
+	 * qq openId
+	 */
+	private String openId;
+
 
 	/**
 	 * 状态  0：禁用   1：正常
@@ -255,5 +259,13 @@ public class SysUserEntity implements Serializable {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
 	}
 }
