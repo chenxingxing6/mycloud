@@ -130,11 +130,12 @@ public class ApiSourceController {
             return;
         }
         localFilePath = localFilePath.replace("\"", "");
-        String originalName = localFilePath.substring(localFilePath.lastIndexOf("/") +1);
+        localFilePath = localFilePath.replace("\\\\", "\\");
+        String originalName = localFilePath.substring(localFilePath.lastIndexOf("\\") +1);
         try {
             //下载的文件携带这个名称
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName="+ new String(originalName.getBytes("GB2312"),"ISO-8859-1"));
+            response.setHeader("Content-Disposition", "attachment;fileName="+ new String(originalName.getBytes("gb2312"),"ISO8859-1"));
             FileInputStream fis = new FileInputStream(localFilePath);
             byte[] content = new byte[fis.available()];
             fis.read(content);
@@ -148,6 +149,11 @@ public class ApiSourceController {
         }
     }
 
+    public static void main(String[] args) {
+        String str = "E:\\\\disk\\\\disk\\\\logo111.jpg";
+        str = str.replace("\\\\", "\\");
+        System.out.println(str.substring(str.lastIndexOf("\\")+1));
+    }
 
     /**
      * 获取企业网盘资源类型
